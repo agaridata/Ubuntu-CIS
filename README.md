@@ -1,28 +1,13 @@
 Ubuntu 16.04 CIS STIG
 ================
 
-[![Build Status](https://travis-ci.com/florianutz/Ubuntu1604-CIS.svg?branch=master)](https://travis-ci.com/florianutz/Ubuntu1604-CIS)
-[![Ansible Role](https://img.shields.io/badge/role-florianutz.Ubuntu1604--CIS-blue.svg)](https://galaxy.ansible.com/florianutz/Ubuntu1604-CIS/)
-
 Configure Ubuntu 16.04 machine to be CIS compliant. Level 1 and 2 findings will be corrected by default.
 
 This role **will make changes to the system** that could break things. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-## IMPORTANT INSTALL STEP
-
-If you want to install this via the `ansible-galaxy` command you'll need to run it like this:
-
-`ansible-galaxy install -p roles -r requirements.yml`
-
-With this in the file requirements.yml:
-
-```
-- src: https://github.com/florianutz/Ubuntu1604-CIS.git
-```
-
 Based on [CIS Ubuntu Benchmark v1.1.0 - 12-28-2017 ](https://www.cisecurity.org/benchmark/ubuntu_linux/). To download this guide, you will need to click the `Download Latest CIS Benchmark Guide (For Ubuntu Linus 18.04)` and register. An email with a personal download link will be sent to your registered email address. From that link you can download the Ubuntu 16.04 guide.
 
-This repo originated from work done by [MindPointGroup](https://github.com/MindPointGroup/RHEL7-CIS)
+This repo originated from work done by [florianutz](https://github.com/florianutz/Ubuntu1604-CIS)
 
 Requirements
 ------------
