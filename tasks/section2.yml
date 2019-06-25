@@ -112,7 +112,7 @@
       - rule_2.1.9
       - notimplemented
 
-name: "SCORED | 2.1.10 | PATCH | Ensure xinetd is not enabled"
+- name: "SCORED | 2.1.10 | PATCH | Ensure xinetd is not enabled"
   systemd:
       name: xinetd
       state: absent
@@ -128,7 +128,7 @@ name: "SCORED | 2.1.10 | PATCH | Ensure xinetd is not enabled"
       - rule_2.1.10
 
 
-name: "SCORED | 2.1.11 | PATCH | Ensure openbsd-inetd is not enabled"
+- name: "SCORED | 2.1.11 | PATCH | Ensure openbsd-inetd is not enabled"
   systemd:
       name: openbsd-inetd
       state: absent
