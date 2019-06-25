@@ -548,7 +548,7 @@ name: "SCORED | 2.1.11 | PATCH | Ensure openbsd-inetd is not enabled"
       name: nis
       state: absent
   when:
-      - not ubuntu1604cis_nix_required
+      - not ubuntu1604cis_nis_required
       - ubuntu1604cis_rule_2_3_1
   tags:
       - level1
