@@ -17,3 +17,8 @@ tests/*.retry
 /lib/
 pip-selfcheck.json
 /share/
+
+#pyenv
+.python-version
+
+

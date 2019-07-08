@@ -146,36 +146,36 @@
 
 - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use"
   block:
-      - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
-        apt:
-            name: "{{ ubuntu1604cis_time_synchronization }}"
-            state: present
-            install_recommends: false
+  - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
+    apt:
+      name: "{{ ubuntu1604cis_time_synchronization }}"
+      state: present
+      install_recommends: false
 
-      - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service start"
-        systemd:
-            name: "{{ ubuntu1604cis_time_synchronization }}"
-            state: started
-            enabled: true
+  - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service start"
+    systemd:
+      name: "{{ ubuntu1604cis_time_synchronization }}"
+      state: started
+      enabled: true
 
-      - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service stop ntp"
-        systemd:
-            name: "{{ ntp_service[ansible_os_family] }}"
-            state: stopped
-            enabled: false
-        when:
-            - ubuntu1604cis_time_synchronization == "chrony"
-            - ntpd_service_status.stdout == "loaded"
+  - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service stop ntp"
+    systemd:
+      name: "{{ ntp_service[ansible_os_family] }}"
+      state: stopped
+      enabled: false
+    when:
+      - ubuntu1604cis_time_synchronization == "chrony"
+      - ntpd_service_status.stdout == "loaded"
 
-      - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service stop chrony"
-        systemd:
-            name: chronyd
-            state: stopped
-            enabled: false
-        ignore_errors: true
-        when:
-            - ubuntu1604cis_time_synchronization == "ntp"
-            - chronyd_service_status.stdout == "loaded"
+  - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service stop chrony"
+    systemd:
+      name: chronyd
+      state: stopped
+      enabled: false
+    ignore_errors: true
+    when:
+        - ubuntu1604cis_time_synchronization == "ntp"
+        - chronyd_service_status.stdout == "loaded"
 
   when:
       - ubuntu1604cis_rule_2_2_1_1
@@ -188,19 +188,19 @@
 
 - name: "SCORED | 2.2.1.2 | PATCH | Ensure ntp is configured"
   block:
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure ntp is configured | modify /etc/ntp.conf"
-        template:
-            src: ntp.conf.j2
-            dest: /etc/ntp.conf
-            owner: root
-            group: root
-            mode: 0644
+  - name: "SCORED | 2.2.1.2 | PATCH | Ensure ntp is configured | modify /etc/ntp.conf"
+    template:
+      src: ntp.conf.j2
+      dest: /etc/ntp.conf
+      owner: root
+      group: root
+      mode: 0644
 
-      - name: "SCORED | 2.2.1.2 | PATCH | Ensure ntp is configured | modify /etc/init.d/ntp"
-        lineinfile:
-            dest: /etc/init.d/ntp
-            regexp: "^RUNASUSER"
-            line: "RUNASUSER=ntp"
+- name: "SCORED | 2.2.1.2 | PATCH | Ensure ntp is configured | modify /etc/init.d/ntp"
+  lineinfile:
+    dest: /etc/init.d/ntp
+    regexp: "^RUNASUSER"
+    line: "RUNASUSER=ntp"
   when:
       - ubuntu1604cis_time_synchronization == "ntp"
       - ubuntu1604cis_rule_2_2_1_2
@@ -300,20 +300,20 @@
 
 - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled"
   block:
-    - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server"
-      systemd:
-        name: isc-dhcp-server
-        state: stopped
-        enabled: false
-      when:
-         - isc-dhcp-server.stdout == "loaded"
-    - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server6"
-      systemd:
-        name: isc-dhcp-server6
-        state: stopped
-        enabled: false
-      when:
-         - isc-dhcp-server6.stdout == "loaded"
+  - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server"
+    systemd:
+      name: isc-dhcp-server
+      state: stopped
+      enabled: false
+    when:
+       - isc-dhcp-server.stdout == "loaded"
+  - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server6"
+    systemd:
+      name: isc-dhcp-server6
+      state: stopped
+      enabled: false
+    when:
+       - isc-dhcp-server6.stdout == "loaded"
   when:
       - not ubuntu1604cis_dhcp_server
       - ubuntu1604cis_rule_2_2_5
