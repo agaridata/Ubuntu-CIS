@@ -457,7 +457,6 @@
       name: autofs
       enabled: false
   when:
-      - not ubuntu1604cis_allow_autofs
       - autofs_service_status.stdout == "loaded"
       - ubuntu1604cis_rule_1_1_21
   tags:
