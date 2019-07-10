@@ -306,14 +306,15 @@
       state: stopped
       enabled: false
     when:
-       - isc-dhcp-server.stdout == "loaded"
+       - isc_dhcp_server_service_status.stdout == "loaded"
+       
   - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server6"
     systemd:
       name: isc-dhcp-server6
       state: stopped
       enabled: false
     when:
-       - isc-dhcp-server6.stdout == "loaded"
+       - isc_dhcp_server6_service_status.stdout == "loaded"
   when:
       - not ubuntu1604cis_dhcp_server
       - ubuntu1604cis_rule_2_2_5

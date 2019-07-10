@@ -111,7 +111,7 @@
       systemctl show isc-dhcp-server | grep LoadState | cut -d = -f 2"
   args:
       executable: /bin/bash
-  register: isc-dhcp-server_service_status
+  register: isc_dhcp_server_service_status
   changed_when: false
   check_mode: false
 
@@ -120,7 +120,7 @@
       systemctl show isc-dhcp-server6 | grep LoadState | cut -d = -f 2"
   args:
       executable: /bin/bash
-  register: isc-dhcp-server6_service_status
+  register: isc_dhcp_server6_service_status
   changed_when: false
   check_mode: false
 
