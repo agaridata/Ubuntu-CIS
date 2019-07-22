@@ -340,6 +340,7 @@ ubuntu1604cis_firewall_services:
 
 # Warning Banner Content (issue, issue.net, motd)
 ubuntu1604cis_warning_banner: |
+    Ubuntu 16.04.6 LTS
     Authorized uses only. All activity may be monitored and reported.
 # End Banner
 
