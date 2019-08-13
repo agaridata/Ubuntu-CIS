@@ -1,0 +1,27 @@
+---
+
+- name: restart auditd
+  service:
+    name: auditd
+    state: restarted
+  changed_when: False
+  ignore_errors: True
+
+- name: restart iptables
+  command: iptables-restore "{{ iptables_rules_file }}" 
+  changed_when: False
+  ignore_errors: True
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  changed_when: False
+  ignore_errors: True
+
+- name: restart syslog-ng
+  service:
+    name: syslog-ng
+    state: restarted
+  changed_when: False
+  ignore_errors: True

@@ -1,0 +1,8 @@
+/var/log/localmessages {
+    daily
+    rotate 30
+    compress
+    missingok
+    notifempty
+    sharedscripts
+}

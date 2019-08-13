@@ -1,0 +1,7 @@
+---
+
+# Variables
+iptables_rules_file: /etc/iptables/rules.v4
+role_path: roles/cis-ubuntu-linux/
+syslog_package: rsyslog
+remote_logs_host_address: 192.168.0.1 # example

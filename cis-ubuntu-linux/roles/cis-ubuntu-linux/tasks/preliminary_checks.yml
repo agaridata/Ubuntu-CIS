@@ -1,0 +1,38 @@
+---
+
+  - name: "Check if Ansible version is 2.3+"
+    debug:
+      msg: "Check if Ansible version is 2.3+"
+    failed_when: not ansible_version.full is version('2.3', '>=')
+    tags:
+    - section_6
+    - section_5
+    - section_4
+    - section_3
+    - scored
+    - not_scored
+
+  - name: "Check if OS is Ubuntu 16.04 LTS (Xenial Xerus)"
+    debug:
+      msg: "Check if OS is Ubuntu 16.04 LTS (Xenial Xerus)"
+    failed_when: ansible_distribution != "Ubuntu" and ansible_distribution_version !="16.04"
+    tags:
+    - section_6
+    - section_5
+    - section_4
+    - section_3
+    - scored
+    - not_scored
+
+  - name: "Ensure prerequired packages are installed"
+    apt:
+      name: aptitude
+      update_cache: true
+      state: present
+    tags:
+    - section_6
+    - section_5
+    - section_4
+    - section_3
+    - scored
+    - not_scored

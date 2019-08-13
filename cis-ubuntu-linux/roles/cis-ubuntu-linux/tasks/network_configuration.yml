@@ -1,0 +1,102 @@
+---
+ - name: "3.6.1 Ensure iptables is installed and started (Scored)"
+   apt:
+     name: "{{ item }}"
+     update_cache: true
+     state: present
+   with_items:
+     - 'iptables'
+     - 'iptables-persistent'
+   tags:
+    - scored
+    - section_3
+
+ - name: "3.6.5 Ensure firewall rules exist for all open ports (Scored)" 
+   shell: |
+       UDP=$(lsof -i -P -n | grep -e UDP | awk '{print $9}' | cut -d ":" -f2 | sort | uniq) 
+       if [ -n "$UDP" ]; then
+         for i in $UDP ; do 
+           iptables -C INPUT -p udp --dport $i -m state --state NEW -j ACCEPT ; 
+               if [ $? -ne 0 ] ; then 
+                  sed -i '/^:OUTPUT.*/a -A INPUT -p udp --dport '$i' -m state --state NEW -j ACCEPT' /etc/iptables/rules.v4 ; 
+               fi 
+         done
+       fi
+       
+       TCP=$(lsof -i -P -n | grep -e LISTEN | awk '{print $9}' | cut -d ":" -f2 | sort | uniq)
+       if [ -n "$TCP" ]; then
+         for i in $TCP ; do 
+           iptables -C INPUT -p tcp --dport $i -m state --state NEW -j ACCEPT ; 
+               if [ $? -ne 0 ] ; then 
+                  sed -i '/^:OUTPUT.*/a -A INPUT -p tcp --dport '$i' -m state --state NEW -j ACCEPT' /etc/iptables/rules.v4 ; 
+               fi 
+         done
+       fi
+   args:
+     executable: /bin/bash
+   notify: restart iptables
+   tags:
+    - scored
+    - section_3
+
+ - name: "3.6.4 Ensure outbound and established connections are configured (Not Scored)"
+   lineinfile: 
+     name: "{{ iptables_rules_file }}"
+     line: "{{ item }}"
+     insertbefore: '^COMMIT'
+     create: yes
+   with_items:
+     - '-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT'
+     - '-A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT'
+     - '-A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT'
+     - '-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT'
+     - '-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT'
+     - '-A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT' 
+   notify: restart iptables
+   tags:
+    - not_scored
+    - section_3
+
+ - name: “3.6.3 Ensure loopback traffic is configured (Scored)”
+   lineinfile: 
+     name: "{{ iptables_rules_file }}"
+     line: "{{ item }}"
+     insertbefore: '^COMMIT'
+     create: yes
+   with_items:
+     - '-A INPUT -i lo -j ACCEPT'
+     - '-A OUTPUT -o lo -j ACCEPT'
+     - '-A INPUT -s 127.0.0.0/8 -j DROP'
+   notify: restart iptables
+   tags:
+    - scored
+    - section_3
+
+ - name: "3.6.2 Ensure default deny firewall policy (Scored)"
+   lineinfile:
+     name: "{{ iptables_rules_file }}"
+     line: "{{ item }}"
+     insertbefore: '^COMMIT'
+     create: yes
+   with_items:
+     - '-P INPUT DROP'
+     - '-P FORWARD DROP'
+     - '-P OUTPUT DROP'
+   notify: restart iptables
+   tags:
+    - scored
+    - section_3
+
+ - name: "3.7 Ensure wireless interfaces are disabled (Not Scored)"
+   apt:
+     name: rfkill
+     state: present
+   tags:
+    - not_scored
+    - section_3
+
+ - name: "3.7 Ensure wireless interfaces are disabled (Not Scored)"
+   command: rfkill block wifi
+   tags:
+    - not_scored
+    - section_3

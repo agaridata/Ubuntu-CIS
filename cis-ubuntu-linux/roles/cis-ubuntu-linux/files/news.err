@@ -1,0 +1,8 @@
+/var/log/news.err {
+    daily
+    rotate 30
+    compress
+    missingok
+    notifempty
+    sharedscripts
+}

@@ -1,0 +1,8 @@
+/var/log/mail.info {
+    daily
+    rotate 30
+    compress
+    missingok
+    notifempty
+    sharedscripts
+}

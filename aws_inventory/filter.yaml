@@ -1,0 +1,403 @@
+resources:
+
+- AutoScalingInstances:
+    description: "AutoScaling Instances"
+    colors:
+      'CDEACE':
+        - InService
+        - Healthy
+    filter: '.AutoScalingGroups[]|{ AutoScalingGroupName } + (.Instances[])| {
+      "Instance ID":.InstanceId,
+      "AutoScaling Group Name":.AutoScalingGroupName,
+      "Availability Zone":.AvailabilityZone,
+      "Lifecycle State":.LifecycleState,
+      "Health Status":.HealthStatus,
+      "LaunchConfiguration Name":.LaunchConfigurationName,
+      "Protected From Scale In":.ProtectedFromScaleIn
+    }'
+
+- CloudFront:
+    description: "CloudFront"
+    colors:
+      'EFAA9C':
+        - TLSv1
+    filter: '.DistributionList.Items[]|{
+      "ID":.Id,
+      "Domain Name":.DomainName,
+      "Comment":.Comment,
+      "Status":.Status,
+      "Geo Restriction":.Restrictions.GeoRestriction.RestrictionType,
+      "Viewer Protocol Policy":.DefaultCacheBehavior.ViewerProtocolPolicy,
+      "SSL Support Method":.ViewerCertificate.SSLSupportMethod,
+      "Minimum Protocol Version":.ViewerCertificate.MinimumProtocolVersion,
+      "Certificate Source":.ViewerCertificate.CertificateSource
+    }'
+
+- CloudTrails:
+    description: "Cloud Trails"
+    filter: '.trailList[]|{
+    "Name":.Name,
+    "S3 Bucket Name":.S3BucketName,
+    "Include Global Service Events":.IncludeGlobalServiceEvents,
+    "Multi Region Trail":.IsMultiRegionTrail,
+    "Home Region":.HomeRegion,
+    "Trail ARN":.TrailARN,
+    "Log File Validation Enabled":.LogFileValidationEnabled,
+    "CloudWatch Logs Log Group Arn":.CloudWatchLogsLogGroupArn,
+    "CloudWatch Logs Role Arn":.CloudWatchLogsRoleArn,
+    "Has Custom Event Selectors":.HasCustomEventSelectors,
+    "Organization Trail":.IsOrganizationTrail
+    }'
+
+- DynamoDBTables:
+    description: "DynamoDB Tables"
+    filter: '.[]|.Table|{
+    "Table Name":.TableName,
+    "Table Status":.TableStatus,
+    "Table ID":.TableId,
+    "SSE Type":.SSEDescription.SSEType,
+    "KMS MasterKey ARN":.SSEDescription.KMSMasterKeyArn
+    }'
+
+- EC2IAM:
+    description: "EC2 - IAM"
+    filter: '.IamInstanceProfileAssociations[]|{
+    "Association ID":.AssociationId,
+    "Instance ID":.InstanceId,
+    "State":.State,
+    "IAM Instance Profile":.IamInstanceProfile.Arn
+    }'
+
+
+- EC2Instances:
+    description: "EC2 Instances"
+    colors:
+      'CDEACE':
+        - enabled
+      'EFAA9C':
+        - disabled
+    CellFormat:
+      "Security Groups":
+        iterate_by:
+          - ~: [ 'GroupId', 'GroupName' ]
+
+    filter: '.Reservations[]| .Instances[]|{
+    "Instance ID ":.InstanceId,
+    "Instance Type":.InstanceType,
+    "Availability Zone":.Placement.AvailabilityZone,
+    "Tenancy":.Placement.Tenancy,
+    "EBS Optimized":.EbsOptimized,
+    "Monitoring Status":.Monitoring.State,
+    "Status Name":.State.Name,
+    "VPC ID":.VpcId,
+    "Security Groups":.SecurityGroups|tostring,
+    "Image ID":.ImageId,
+    "AMI Name":.ImageName,
+    "AMI Description":.ImageDescription
+    }'
+
+- ElasticBlockStorages:
+    description: "Elastic Block Storages"
+    colors:
+      'CDEACE':
+        - 'in-use'
+      'EFAA9C':
+        - 'available'
+    filter: '.Volumes[] | {
+    "Volume ID":.VolumeId,
+    "Volume Type":.VolumeType,
+    "IOPS":.Iops,
+    "Snapshot ID":.SnapshotId,
+    "Create Time":.CreateTime,
+    "Size":.Size,
+    "Availability Zone":.AvailabilityZone,
+    "Encrypted":.Encrypted,
+    "State":.State,
+    "Instance ID": .Attachments[]|.InstanceId,
+    "Delete On Termination": .Attachments[]|.DeleteOnTermination,
+    "Device": .Attachments[]|.Device,
+    "Attach Time": .Attachments[]|.AttachTime
+    }'
+
+
+- ElasticIPs:
+    description: "ElasticIPs"
+    filter: '.Addresses[]|{
+    "Instance ID":.InstanceId,
+    "Public IP":.PublicIp,
+    "Allocation ID":.AllocationId,
+    "Association ID":.AssociationId,
+    "Domain":.Domain,
+    "Network Interface ID":.NetworkInterfaceId,
+    "Network Interface Owner ID":.NetworkInterfaceOwnerId,
+    "Private IP Address":.PrivateIpAddress,
+    "Public IPv4 Pool":.PublicIpv4Pool
+    }'
+
+- IAMGroups:
+    description: "IAM Groups"
+    filter: '.Groups[]|{
+    "Path":.Path,
+    "Group Name":.GroupName,
+    "Group ID":.GroupId,
+    "ARN":.Arn,
+    "Create Date":.CreateDate
+    }'
+
+- IAMUsers:
+    description: "IAM Users"
+    CellFormat:
+      "Groups":
+        iterate_by:
+          - ~: [ 'GroupName' ]
+      "Attached Policies":
+        iterate_by:
+          - ~: [ 'PolicyName' ]
+    filter: '.Users[] | {
+    "Path":.Path,
+    "User Name":.UserName,
+    "User ID":.UserId,
+    "ARN":.Arn,
+    "Create Date":.CreateDate,
+    "Groups":.Groups.Groups|tostring,
+    "Attached Policies":.AttachedPolicies.AttachedPolicies|tostring
+    }'
+
+
+- IAMPasswordPolicy:
+    description: "IAM Password Policy"
+    filter: '.PasswordPolicy|{
+    "Minimum Password Length":.MinimumPasswordLength,
+    "Require Symbols":.RequireSymbols,
+    "Require Numbers":.RequireNumbers,
+    "Require Uppercase Characters":.RequireUppercaseCharacters,
+    "Require Lowercase Characters":.RequireLowercaseCharacters,
+    "Allow Users To Change Password":.AllowUsersToChangePassword,
+    "Expire Passwords":.ExpirePasswords,
+    "Hard Expiry":.HardExpiry
+    }'
+
+- IAMRoles:
+    description: "IAM Roles"
+    filter: '.Roles[]|{
+    "Role Name":.RoleName,
+    "Path":.Path,
+    "Role ID":.RoleId,
+    "ARN":.Arn,
+    "Create Date":.CreateDate,
+    "MaxSession Duration":.MaxSessionDuration,
+    "Assume Role Policy Document":.AssumeRolePolicyDocument|tostring
+    }'
+- IAMPolicies:
+    description: "IAM Policies"
+    filter: '.Policies[]|{
+    "Policy Name":.PolicyName,
+    "Policy ID":.PolicyId,
+    "ARN":.Arn,
+    "Default Version ID":.DefaultVersionId,
+    "Attachment Count":.AttachmentCount,
+    "Permissions Boundary Usage Count":.PermissionsBoundaryUsageCount,
+    "Is Attachable":.IsAttachable,
+    "Create Date":.CreateDate,
+    "Update Date":.UpdateDate
+    }'
+- IAMAttachedGroupPolicies:
+    description: "List of Attached Group Policies"
+    filter: '.[]|{ GroupName } + (.AttachedPolicies[])|{
+    "Policy Name":.PolicyName,
+    "Group Name":.GroupName,
+    "Policy ARN":.PolicyArn
+    }'
+- LoadBalancers:
+    description: "LoadBalancers"
+    colors:
+      'CDEACE':
+        - 'true'
+      'EFAA9C':
+        - 'false'
+    filter: '.LoadBalancers[]|{
+    "LoadBalancer Name":.LoadBalancerName,
+    "DNS Name":.DNSName,
+    "LoadBalancer ARN":.LoadBalancerArn,
+    "VPC ID":.VpcId,
+    "Type":.Type,
+    "IP Address Type":.IpAddressType,
+    "State":.State.Code,
+    "AccessLog Enabled":.AccessLogEnabled.Attributes[]| select(.Key | contains("access_logs.s3.enabled"))|.Value
+    }'
+
+- ClassicLoadBalancers:
+    description: "Classic LoadBalancers"
+    CellFormat:
+      "Security Groups": json
+      "Listeners": json
+      "Policies": json
+    filter: '.LoadBalancerDescriptions[] | {
+    "LoadBalancer Name":.LoadBalancerName,
+    "DNS Name":.DNSName,
+    "Canonical HostedZone Name":.CanonicalHostedZoneName,
+    "VPC ID":.VPCId,
+    "Scheme":.Scheme,
+    "Security Groups":.SecurityGroups|tostring,
+    "Listeners":.ListenerDescriptions|tostring,
+    "Policies":.Policies|tostring,
+    "AccessLog Enabled":.AccessLogEnabled.LoadBalancerAttributes.AccessLog.Enabled
+    }'
+
+- NATGateways:
+    description: "NAT Gateways"
+    filter: '.NatGateways[]|{
+    "NAT Gateway ID":.NatGatewayId,
+    "Subnet ID":.SubnetId,
+    "VPC ID":.VpcId,
+    "State":.State
+    }'
+- RDS:
+    description: "RDS - DBInstances"
+    colors:
+      'EFAA9C':
+        - 0
+    filter: '.DBInstances[]|{
+    "DB Instance Identifier":.DBInstanceIdentifier,
+    "DB Instance Class":.DBInstanceClass,
+    "Engine":.Engine,
+    "DB Instance Status":.DBInstanceStatus,
+    "Master Username":.MasterUsername,
+    "DB Name":.DBName,
+    "Address":.Endpoint.Address,
+    "Backup Retention Period":.BackupRetentionPeriod,
+    "Latest Restorable Time":.LatestRestorableTime,
+    "Multi AZ":.MultiAZ,
+    "Auto Minor Version Upgrade":.AutoMinorVersionUpgrade,
+    "Publicly Accessible":.PubliclyAccessible,
+    "Storage Encrypted":.StorageEncrypted,
+    "IAM Database Authentication Enabled":.IAMDatabaseAuthenticationEnabled,
+    "Deletion Protection":.DeletionProtection
+    }'
+
+
+- SecurityGroups:
+    description: "Security Groups"
+    CellFormat:
+      "Ingress":
+        colors:
+          'EFAA9C':
+            - '0.0.0.0/0'
+        iterate_by:
+          - UserIdGroupPairs: [ 'GroupId', 'Description' ]
+          - IpRanges: ['CidrIp', 'Description']
+      "Egress":
+        iterate_by:
+          - UserIdGroupPairs: [ 'GroupId', 'Description' ]
+          - IpRanges: ['CidrIp', 'Description']
+    field_colors:
+      'Ingress':
+        'EFAA9C':
+          - '0.0.0.0/0'
+    filter: '.SecurityGroups[]|{
+    "Description":.Description,
+    "Group Name":.GroupName,
+    "Group ID":.GroupId,
+    "VPC ID":.VpcId,
+    "Ingress":.IpPermissions|tostring,
+    "Egress":.IpPermissionsEgress|tostring
+    }'
+
+    rule_types:
+      'All traffic': { All: All }
+      'Custom TCP Rule': { tcp: '*' }
+      'Custom UDP Rule': { udp: '*' }
+      'Custom ICMP Rule': { icmp: '*' }
+      'Custom ICMPv6 Rule': { icmpv6: '*' }
+      'All TCP': { tcp: '0-65535' }
+      'All UDP': { udp: '0-65535' }
+      'All ICMP': { icmp: All }
+      'All ICMPv6': { icmpv6: All }
+      'SSH': { tcp: 22 }
+      'SMTP': { tcp: 25 }
+      'DNS (UDP)': { udp: 53 }
+      'DNS (TCP)': { tcp: 53 }
+      'HTTP': { tcp: 80 }
+      'POP3': { tcp: 110 }
+      'IMAP': { tcp: 143 }
+      'LDAP': { tcp: 389 }
+      'HTTPS': { tcp: 443 }
+      'SMB': { tcp: 445 }
+      'SMTPS': { tcp: 465 }
+      'IMAPS': { tcp: 993 }
+      'POP3S': { tcp: 995 }
+      'MS SQL': { tcp: 1433 }
+      'NFS': { tcp: 2049 }
+      'MYSQL/Aurora': { tcp: 3306 }
+      'RDP': { tcp: 3389 }
+      'Redshift': { tcp: 5439 }
+      'PostgreSQL': { tcp: 5432 }
+      'Oracle-RDS': { tcp: 1521 }
+      'WinRM-HTTP': { tcp: 5985 }
+      'WinRM-HTTPS': { tcp: 5986 }
+      'Elastic GPU': { tcp: 2007 }
+
+
+- S3:
+    description: "S3 Buckets"
+    CellFormat:
+      "Tags":
+        iterate_by:
+          - ~: [ 'Key', 'Value' ]
+      "Event Notifications": json
+      "Logging": json
+      "Static web hosting": json
+      "Object Lock": json
+      "Access Control List": json
+      "Bucket Policy": json
+      "CORS configuration": json
+      "Encryption": json
+      "Lifecycle": json
+      "Cross-region replication": json
+      "Analytics": json
+      "Inventory": json
+      "Metrics": json
+      "Public Access Settings": json
+    colors:
+      'CDEACE':
+        - Enabled
+      'EFAA9C':
+        - Disabled
+    filter: '{ Owner } + .Buckets[] | {
+    "Bucket Name":.Name,
+    "Event Notifications":.EventNotifications|tostring,
+    "Versioning":(.Versioning.Status // "Disabled" ),
+    "MFA delete":(.Versioning.MFADelete // "Disabled"),
+    "Logging":.Logging.LoggingEnabled|tostring,
+    "Static web hosting":.Website|tostring,
+    "Tags":.Tags.TagSet|tostring,
+    "Requester pays":.Payer.Payer,
+    "Object Lock":.ObjectLockConfiguration.ObjectLockConfiguration|tostring,
+    "Transfer Acceleration":.AccelerateConfiguration.Status,
+    "Owner":.Owner.DisplayName,
+    "Bucket Policy":.Policy.Policy|tostring,
+    "CORS configuration":.CORS.CORSRules|tostring,
+    "Encryption":.Encryption.ServerSideEncryptionConfiguration|tostring,
+    "Lifecycle":.Lifecycle.Rules|tostring,
+    "Cross-region replication":.Replication.ReplicationConfiguration|tostring,
+    "Analytics":.Analytics.AnalyticsConfiguration|tostring,
+    "Inventory":.Inventory.InventoryConfigurationList|tostring,
+    "Metrics":.Metrics.MetricsConfiguration|tostring,
+    "Public Access Settings":.PublicAccessBlock.PublicAccessBlockConfiguration|tostring,
+    "Access Control List":.ACL|tostring,
+    }'
+
+- VPNGateways:
+    description: "VPN Gateways"
+    colors:
+      'CDEACE':
+        - attached
+      'EFAA9C':
+        - detached
+    filter: '.VpnGateways[]|{
+    "VPN Gateway ID":.VpnGatewayId,
+    "Attachment State":.VpcAttachments[]|.State,
+    "Attachment VPC ID":.VpcAttachments[]|.VpcId,
+    "Type":.Type,
+    "State":.State
+    }'
