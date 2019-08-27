@@ -634,6 +634,20 @@
       - rule_5.4.4
       - scored
 
+- name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less"
+  lineinfile:
+      state: present
+      dest: /etc/profile
+      regexp: '^TMOUT'
+      line: 'TMOUT=600'
+  when:
+      - ubuntu1604cis_rule_5_4_5
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.5
+
 - name: "NOTSCORED | 5.5 | PATCH | Ensure root login is restricted to system console"
   stat:
       path: /etc/securetty
