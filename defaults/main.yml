@@ -217,6 +217,7 @@ ubuntu1604cis_rule_5_4_1_4: true
 ubuntu1604cis_rule_5_4_2: true
 ubuntu1604cis_rule_5_4_3: true
 ubuntu1604cis_rule_5_4_4: true
+ubuntu1604cis_rule_5_4_5: true
 ubuntu1604cis_rule_5_5: true
 ubuntu1604cis_rule_5_6: false
 
@@ -247,12 +248,14 @@ ubuntu1604cis_rule_6_2_9: true
 ubuntu1604cis_rule_6_2_10: true
 ubuntu1604cis_rule_6_2_11: true
 ubuntu1604cis_rule_6_2_12: true
+ubuntu1604cis_rule_6_2_13: true
 ubuntu1604cis_rule_6_2_14: true
 ubuntu1604cis_rule_6_2_15: true
 ubuntu1604cis_rule_6_2_16: true
 ubuntu1604cis_rule_6_2_17: true
 ubuntu1604cis_rule_6_2_18: true
 ubuntu1604cis_rule_6_2_19: true
+ubuntu1604cis_rule_6_2_20: true
 
 # Service configuration booleans set true to keep service
 ubuntu1604cis_avahi_server: false
@@ -416,3 +419,7 @@ chrony_config_file:
 
 ### Firewall
 ubuntu1604cis_setup_firewall: false
+
+iptables_rules_file: /etc/iptables/rules.v4
+syslog_package: rsyslog
+remote_logs_host_address: 192.168.0.1

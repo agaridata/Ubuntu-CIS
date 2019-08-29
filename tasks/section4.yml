@@ -89,10 +89,10 @@
       replace: '\1"\2 audit=1"'
       follow: true
   ignore_errors: true
-  notify:
-      - generate new grub config
   when:
       - ubuntu1604cis_rule_4_1_3
+  notify:
+      - generate new grub config
   tags:
       - level2
       - scored
@@ -356,25 +356,39 @@
       - auditd
       - rule_4.1.16
 
-- name: "SCORED | 4.1.17 | PATCH | Ensure kernel module loading and unloading is collected"
-  template:
-      src: audit/ubuntu1604cis_rule_4_1_17.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_17.rules
-      owner: root
-      group: root
-      mode: 0600
+- name: "SCORED | 4.1.17 | PATCH | Ensure auditd package is installed"
+  apt:
+      name: auditd
+      state: present
   when:
       - ubuntu1604cis_rule_4_1_17
-  notify:
-      - load audit rules
-      - restart auditd
   tags:
       - level2
       - scored
       - patch
       - auditd
       - rule_4.1.17
-      - notimplemented
+
+- name: "SCORED | 4.1.17 | PATCH | Ensure kernel module loading and unloading is collected"
+  lineinfile:
+      path: /etc/audit/audit.rules
+      line: '{{ item }}'
+      state: present
+      create: yes
+  with_items:
+      - '-w /sbin/insmod -p x -k modules'
+      - '-w /sbin/rmmod -p x -k modules'
+      - '-w /sbin/modprobe -p x -k modules'
+      - '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules'
+  when:
+      - ubuntu1604cis_rule_4_1_17
+  notify: restart auditd
+  tags:
+      - level2
+      - scored
+      - patch
+      - auditd
+      - rule_4.1.17
 
 - name: "SCORED | 4.1.18 | PATCH | Ensure the audit configuration is immutable"
   template:
@@ -409,9 +423,10 @@
       - syslog
       - rule_4.2.3
 
-- name: "SCORED | 4.2.1.1 | PATCH | Ensure rsyslog Service is enabled"
-  command: /bin/true
-  changed_when: false
+- name: "SCORED | 4.2.1.1 | PATCH | Ensure rsyslog is installed"
+  apt:
+      name: "{{ syslog_package }}"
+      state: present
   when:
       - ubuntu1604cis_rule_4_2_1_1
   tags:
@@ -420,20 +435,68 @@
       - patch
       - syslog
       - rule_4.2.1.1
-      - notimplemented
+
+- name: "SCORED | 4.2.1.1 | PATCH | Ensure rsyslog package present"
+  command: dpkg-query -s "{{ syslog_package }}"
+  register: syslog_package
+  changed_when: False
+  failed_when: False
+  check_mode: no
+  when:
+      - ubuntu1604cis_rule_4_2_1_1
+  tags:
+      - level1
+      - scored
+      - patch
+      - syslog
+      - rule_4.2.1.1
+
+- name: "SCORED | 4.2.1.1 | PATCH | Ensure rsyslog Service is enabled"
+  service:
+      name: rsyslog
+      state: started
+      enabled: yes
+  when:
+      - ubuntu1604cis_rule_4_2_1_1
+      - syslog_package.rc == 0
+  tags:
+      - level1
+      - scored
+      - patch
+      - syslog
+      - rule_4.2.1.1
 
 - name: "NOTSCORED | 4.2.1.2 | PATCH | Ensure logging is configured"
-  command: /bin/true
-  changed_when: false
+  lineinfile:
+      path: /etc/rsyslog.conf
+      line: '{{ item }}'
+      insertafter: EOF
+  with_items:
+      - '*.emerg :omusrmsg:*'
+      - 'mail.* -/var/log/mail'
+      - 'mail.info -/var/log/mail.info'
+      - 'mail.warning -/var/log/mail.warn'
+      - 'mail.err /var/log/mail.err'
+      - 'news.crit -/var/log/news/news.crit'
+      - 'news.err -/var/log/news/news.err'
+      - 'news.notice -/var/log/news/news.notice'
+      - '*.=warning;*.=err -/var/log/warn'
+      - '*.crit /var/log/warn'
+      - '*.*;mail.none;news.none -/var/log/messages'
+      - 'local0,local1.* -/var/log/localmessages'
+      - 'local2,local3.* -/var/log/localmessages'
+      - 'local4,local5.* -/var/log/localmessages'
+      - 'local6,local7.* -/var/log/localmessages'
   when:
       - ubuntu1604cis_rule_4_2_1_2
+      - syslog_package.rc == 0
+  notify: restart rsyslog
   tags:
       - level1
       - notscored
       - patch
       - syslog
       - rule_4.2.1.2
-      - notimplemented
 
 - name: "SCORED | 4.2.1.3 | PATCH | Ensure rsyslog default file permissions configured"
   lineinfile:
@@ -450,8 +513,11 @@
       - rule_4.2.1.3
 
 - name: "SCORED | 4.2.1.4 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
-  command: /bin/true
-  changed_when: false
+  command: grep "^*.*[^I][^I]*@" /etc/rsyslog.conf
+  register: remoteloghost
+  changed_when: False
+  failed_when: False
+  check_mode: no
   when:
       - ubuntu1604cis_rule_4_2_1_4
   tags:
@@ -460,11 +526,30 @@
       - patch
       - syslog
       - rule_4.2.1.4
-      - notimplemented
+
+- name: "SCORED | 4.2.1.4 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
+  lineinfile:
+      path: /etc/rsyslog.conf
+      line: '*.* @@{{ remote_logs_host_address }}'
+      insertafter: EOF
+      state: present
+  when:
+      - ubuntu1604cis_rule_4_2_1_4
+      - remoteloghost.rc == 1
+      - syslog_package.rc == 0
+  notify: restart rsyslog
+  tags:
+      - level1
+      - scored
+      - patch
+      - syslog
+      - rule_4.2.1.4
 
 - name: "NOTSCORED | 4.2.1.5 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts."
-  command: /bin/true
-  changed_when: false
+  command: grep '^$ModLoad imtcp' /etc/rsyslog.conf
+  register: moadloadpresent
+  failed_when: False
+  check_mode: no
   when:
       - ubuntu1604cis_rule_4_2_1_5
   tags:
@@ -473,24 +558,34 @@
       - patch
       - syslog
       - rule_4.2.1.5
-      - notimplemented
 
 - name: "NOTSCORED | 4.2.1.5 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts."
-  command: /bin/true
-  changed_when: false
+  lineinfile:
+      path: /etc/rsyslog.conf
+      regexp: '^#({{ item }})'
+      line: '{{ item }}'
+      state: present
+  with_items:
+      - '$ModLoad imtcp'
+      - '$InputTCPServerRun 514'
+  notify: restart rsyslog
   when:
       - ubuntu1604cis_rule_4_2_1_5
+      - moadloadpresent.rc == 0
+      - syslog_package.rc == 0
   tags:
       - level1
       - notscored
       - patch
       - syslog
       - rule_4.2.1.5
-      - notimplemented
 
 - name: "SCORED | 4.2.2.1 | PATCH | Ensure syslog-ng service is enabled"
-  command: /bin/true
-  changed_when: false
+  command: dpkg-query -s syslog-ng
+  register: syslogng_package
+  changed_when: False
+  failed_when: False
+  check_mode: no
   when:
       - ubuntu1604cis_rule_4_2_2_1
   tags:
@@ -499,59 +594,224 @@
       - patch
       - syslog
       - rule_4.2.2.1
-      - notimplemented
+
+- name: "SCORED | 4.2.2.1 | PATCH | Ensure syslog-ng service is enabled"
+  service:
+      name: syslog-ng
+      enabled: yes
+  when:
+      - ubuntu1604cis_rule_4_2_2_1
+      - syslogng_package.rc == 0
+  tags:
+      - level1
+      - scored
+      - patch
+      - syslog
+      - rule_4.2.2.1
 
 - name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
-  command: /bin/true
-  changed_when: false
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      line: '{{ item }}'
+      insertafter: '^# message go where.'
+  with_items:
+      - 'filter f_iptables { facility(kern) and match("IN=") and match("OUT="); };'
+      - 'filter f_acpid { match("^\[acpid\]:"); };'
+      - 'filter f_acpid_old  { match("^\[acpid\]:"); };'
+      - 'filter f_acpid_full { match("^\acpid:"); };'
+      - 'filter f_netmgm { match("^NetworkManager:"); };'
   when:
       - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
   tags:
       - level1
       - notscored
       - patch
       - syslog
       - rule_4.2.2.2
-      - notimplemented
+
+- name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      line: '{{ item }}'
+      insertbefore: '^# This files are the log come from the mail subsystem.'
+  with_items:
+      - 'destination d_firewall { file("/var/log/iptables"); };'
+      - 'destination d_acpid { file("/var/log/acpid"); };'
+      - 'destination d_netmgm { file("/var/log/NetworkManager"); };'
+      - 'destination d_locmessages { file("/var/log/localmessages"); };'
+      - 'destination d_warn { file("/var/log/warn" fsync(yes)); };'
+      - 'destination d_devnull { };'
+  when:
+      - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
+  tags:
+      - level1
+      - notscored
+      - patch
+      - syslog
+      - rule_4.2.2.2
+
+- name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      line: '{{ item }}'
+      insertbefore: '^# All messages send to a remote site'
+  with_items:
+      - 'log { source(s_src); filter(f_mail); filter (f_info); destination(d_mailinfo); };'
+      - 'log { source(s_src); filter(f_mail); filter (f_warn); destination(d_mailwarn); };'
+      - 'log { source(s_src); filter(f_mail); filter (f_err); destination(d_mailerr); };'
+      - 'log { source(s_src); filter(f_mail); destination(d_mail); };'
+      - 'log { source(s_src); filter(f_acpid); destination(d_acpid); flags(final); };'
+      - 'log { source(s_src); filter(f_acpid_full); destination(d_devnull); flags(final); };'
+      - 'log { source(s_src); filter(f_acpid_old); destination(d_acpid); flags(final); };'
+      - 'log { source(s_src); filter(f_netmgm); destination(d_netmgm); flags(final); };'
+      - 'log { source(s_src); filter(f_local); destination(d_locmessages); };'
+      - 'log { source(s_src); filter(f_iptables); destination(d_firewall); };'
+      - 'log { source(s_src); filter(f_warn); destination(d_warn); };'
+  changed_when: False
+  when:
+      - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
+  tags:
+      - level1
+      - notscored
+      - patch
+      - syslog
+      - rule_4.2.2.2
+
+- name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
+  lineinfile:
+      name: "{{ iptables_rules_file }}"
+      line: "{{ item }}"
+      insertbefore: '^COMMIT'
+  with_items:
+      - '-A INPUT -m state --state INVALID -j LOG --log-prefix "Iptables: Invalid packet: "'
+      - '-A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG --log-prefix "Iptables: INPUT packet died: "'
+      - '-A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG --log-prefix "Iptables: FORWARD packet died: "'
+  when:
+      - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  notify: restart iptables
+  tags:
+      - level1
+      - notscored
+      - patch
+      - syslog
+      - rule_4.2.2.2
+
+- name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
+  copy:
+      src: '{{ item }}'
+      dest: /etc/logrotate.d/
+      mode: 0644
+  with_items:
+      - iptables
+      - NetworkManager
+      - acpid
+      - warn
+      - localmessages
+  when:
+      - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  tags:
+      - level1
+      - notscored
+      - patch
+      - syslog
+      - rule_4.2.2.2
+
+- name: "NOTSCORED | 4.2.2.2 | PATCH | Ensure logging is configured"
+  file:
+      path: /var/log/{{ item }}
+      state: touch
+      owner: root
+      group: adm
+      mode: 0640
+  with_items:
+      - iptables
+      - NetworkManager
+      - acpid
+      - warn
+      - localmessages
+  when:
+      - ubuntu1604cis_rule_4_2_2_2
+      - syslogng_package.rc == 0
+  tags:
+      - level1
+      - notscored
+      - patch
+      - syslog
+      - rule_4.2.2.2
 
 - name: "SCORED | 4.2.2.3 | PATCH | Ensure syslog-ng default file permissions configured"
-  command: /bin/true
-  changed_when: false
+  command: sed -i '/\t  owner("root"); group("adm"); perm(0640); stats_freq(0);\|\t  bad_hostname("^gconfd$");/d' /etc/syslog-ng/syslog-ng.conf
   when:
       - ubuntu1604cis_rule_4_2_2_3
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
   tags:
       - level1
       - scored
       - patch
       - syslog
       - rule_4.2.2.3
-      - notimplemented
+
+- name: "SCORED | 4.2.2.3 | PATCH | Ensure syslog-ng default file permissions configured"
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      regexp: '^options'
+      line: 'options { chain_hostnames(off); flush_lines(0); use_dns(no); use_fqdn(no); owner("root"); group("adm"); perm(0640); stats_freq(0); bad_hostname("^gconfd$");'
+  when:
+      - ubuntu1604cis_rule_4_2_2_3
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
+  tags:
+      - level1
+      - scored
+      - patch
+      - syslog
+      - rule_4.2.2.3
 
 - name: "NOTSCORED | 4.2.2.4 | PATCH | Ensure syslog-ng is configured to send logs to a remote log host"
-  command: /bin/true
-  changed_when: false
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      regexp: '^destination logserver'
+      insertafter: '^#destination d_net'
+      line: 'destination logserver { tcp("{{ remote_logs_host_address }}" port(514)); }; log { source(s_src); destination(logserver); };'
   when:
       - ubuntu1604cis_rule_4_2_2_4
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
   tags:
       - level1
       - notscored
       - patch
       - syslog
       - rule_4.2.2.4
-      - notimplemented
 
 - name: "NOTSCORED | 4.2.2.5 | PATCH | Ensure remote syslog-ng messages are only accepted on designated log hosts"
-  command: /bin/true
-  changed_when: false
+  lineinfile:
+      path: /etc/syslog-ng/syslog-ng.conf
+      line: '{{ item }}'
+      insertafter: EOF
+  with_items:
+    - 'source net{ tcp(); };'
+    - 'destination remote { file("/var/log/remote/${FULLHOST}-log"); };'
+    - 'log { source(net); destination(remote); };'
   when:
       - ubuntu1604cis_rule_4_2_2_5
+      - syslogng_package.rc == 0
+  notify: restart syslog-ng
   tags:
       - level1
       - notscored
       - patch
       - syslog
       - rule_4.2.2.5
-      - notimplemented
 
 - name: "SCORED | 4.2.4 | PATCH | Ensure permissions on all logfiles are configured"
   command: find /var/log -type f -exec chmod g-wx,o-rwx {} +

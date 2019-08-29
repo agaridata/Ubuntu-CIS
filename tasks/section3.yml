@@ -375,28 +375,14 @@
       - patch
       - rule_3.6
 
-- name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed"
-  apt:
-      name: iptables
-      state: present
-      install_recommends: false
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_3.6.1
-
 - name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed and started"
-  service:
-      name: iptables
-      state: started
-      enabled: true
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
+  apt:
+      name: "{{ item }}"
+      update_cache: true
+      state: present
+  with_items:
+      - 'iptables'
+      - 'iptables-persistent'
   tags:
       - level1
       - scored
@@ -432,81 +418,106 @@
       - rule_3.6.2
 
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
+  lineinfile:
+      name: "{{ iptables_rules_file }}"
+      line: "{{ item }}"
+      insertbefore: '^COMMIT'
+      regexp: "^{{ item }}"
+      create: yes
+  with_items:
+      - '-P INPUT DROP'
+      - '-P FORWARD DROP'
+      - '-P OUTPUT DROP'
+  notify: restart iptables
   tags:
       - level1
       - scored
       - patch
       - rule_3.6.2
-      - notimplemented
 
 - name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
+  lineinfile:
+      name: "{{ iptables_rules_file }}"
+      line: "{{ item }}"
+      insertbefore: '^COMMIT'
+      regexp: "^{{ item }}"
+      create: yes
+  with_items:
+      - '-A INPUT -i lo -j ACCEPT'
+      - '-A OUTPUT -o lo -j ACCEPT'
+      - '-A INPUT -s 127.0.0.0/8 -j DROP'
+  notify: restart iptables
   tags:
       - level1
       - scored
       - patch
       - rule_3.6.3
-      - notimplemented
 
 - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
+  lineinfile:
+      name: "{{ iptables_rules_file }}"
+      line: "{{ item }}"
+      insertbefore: '^COMMIT'
+      regexp: "^{{ item }}"
+      create: yes
+  with_items:
+      - '-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT'
+      - '-A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT'
+      - '-A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT'
+      - '-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT'
+      - '-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT'
+      - '-A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT'
+  notify: restart iptables
   tags:
       - level1
       - notscored
       - patch
       - rule_3.6.4
-      - notimplemented
 
 - name: "SCORED | 3.6.5 | PATCH | Ensure firewall rules exist for all open ports"
-  firewalld:
-      service: "{{ item }}"
-      state: enabled
-      zone: drop
-      permanent: true
-      immediate: true
-  when:
-      - ubuntu1604cis_firewall == "firewalld"
-      - ubuntu1604cis_setup_firewall
-  notify: restart firewalld
-  with_items: "{{ ubuntu1604cis_firewall_services }}"
+  shell: |
+      UDP=$(lsof -i -P -n | grep -e UDP | awk '{print $9}' | cut -d ":" -f2 | sort | uniq)
+      if [ -n "$UDP" ]; then
+        for i in $UDP ; do
+          iptables -C INPUT -p udp --dport $i -m state --state NEW -j ACCEPT ;
+            if [ $? -ne 0 ] ; then
+              sed -i '/^:OUTPUT.*/a -A INPUT -p udp --dport '$i' -m state --state NEW -j ACCEPT' /etc/iptables/rules.v4 ;
+            fi
+        done
+      fi
+
+      TCP=$(lsof -i -P -n | grep -e LISTEN | awk '{print $9}' | cut -d ":" -f2 | sort | uniq)
+      if [ -n "$TCP" ]; then
+        for i in $TCP ; do
+          iptables -C INPUT -p tcp --dport $i -m state --state NEW -j ACCEPT ;
+            if [ $? -ne 0 ] ; then
+              sed -i '/^:OUTPUT.*/a -A INPUT -p tcp --dport '$i' -m state --state NEW -j ACCEPT' /etc/iptables/rules.v4 ;
+            fi
+        done
+      fi
+  args:
+      executable: /bin/bash
+  notify: restart iptables
   tags:
       - level1
       - scored
       - patch
       - rule_3.6.5
-
-- name: "SCORED | 3.6.5 | PATCH | Ensure firewall rules exist for all open ports"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1604cis_firewall == "iptables"
-      - ubuntu1604cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_3.6.5
-      - notimplemented
 
 - name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
-  command: /bin/true
-  changed_when: false
+  apt:
+      name: rfkill
+      state: present
   tags:
       - level1
       - notscored
       - patch
       - rule_3.7
-      - notimplemented
+
+- name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
+  command: rfkill block wifi
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_3.7

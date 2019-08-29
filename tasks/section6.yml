@@ -1,7 +1,9 @@
 ---
 - name: "NOTSCORED | 6.1.1 | PATCH | Audit system file permissions"
-  command: /bin/true
-  changed_when: false
+  shell: dpkg --verify
+  args:
+      executable: /bin/bash
+  register: system_file_permissions_warnings
   when:
       - ubuntu1604cis_rule_6_1_1
   tags:
@@ -9,7 +11,17 @@
       - notscored
       - patch
       - rule_6.1.1
-      - notimplemented
+
+- debug:
+      msg: "{{system_file_permissions_warnings.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_1
+  tags:
+      - level2
+      - notscored
+      - patch
+      - rule_6.1.1
+
 
 - name: "SCORED | 6.1.2 | PATCH | Ensure permissions on /etc/passwd are configured"
   file:
@@ -30,7 +42,7 @@
       dest: /etc/shadow
       owner: root
       group: root
-      mode: 0000
+      mode: 0640
   when:
       - ubuntu1604cis_rule_6_1_3
   tags:
@@ -58,7 +70,7 @@
       dest: /etc/gshadow
       owner: root
       group: root
-      mode: 0000
+      mode: 0640
   when:
       - ubuntu1604cis_rule_6_1_5
   tags:
@@ -72,7 +84,7 @@
       dest: /etc/passwd-
       owner: root
       group: root
-      mode: 0600
+      mode: 0644
   when:
       - ubuntu1604cis_rule_6_1_6
   tags:
@@ -86,7 +98,7 @@
       dest: /etc/shadow-
       owner: root
       group: root
-      mode: 0000
+      mode: 0640
   when:
       - ubuntu1604cis_rule_6_1_7
   tags:
@@ -100,7 +112,7 @@
       dest: /etc/group-
       owner: root
       group: root
-      mode: 0600
+      mode: 0644
   when:
       - ubuntu1604cis_rule_6_1_8
   tags:
@@ -114,7 +126,7 @@
       dest: /etc/gshadow-
       owner: root
       group: root
-      mode: 0600
+      mode: 0640
   when:
       - ubuntu1604cis_rule_6_1_9
   tags:
@@ -124,8 +136,11 @@
       - rule_6.1.9
 
 - name: "SCORED | 6.1.10 | PATCH | Ensure no world writable files exist"
-  command: /bin/true
+  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002 -print
   changed_when: false
+  failed_when: false
+  check_mode: no
+  register: world_files
   when:
       - ubuntu1604cis_rule_6_1_10
   tags:
@@ -133,11 +148,35 @@
       - scored
       - patch
       - rule_6.1.10
-      - notimplemented
+
+- debug:
+      msg: "{{ item }}"
+  with_items: "{{world_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_10
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.10
+
+- name: "SCORED | 6.1.10 | PATCH | Ensure no world writable files exist"
+  command: chmod o-w {{ item }}
+  with_items: "{{world_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_10
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.10
 
 - name: "SCORED | 6.1.11 | PATCH | Ensure no unowned files or directories exist"
-  command: /bin/true
+  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser -ls | awk '{print $11}'
   changed_when: false
+  failed_when: false
+  check_mode: no
+  register: unowned_files
   when:
       - ubuntu1604cis_rule_6_1_11
   tags:
@@ -145,11 +184,35 @@
       - scored
       - patch
       - rule_6.1.11
-      - notimplemented
+
+- debug:
+      msg: "{{ item }}"
+  with_items: "{{unowned_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_11
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.11
+
+- name: "SCORED | 6.1.11 | PATCH | Ensure no unowned files or directories exist"
+  command: chown root:root {{ item }}
+  with_items: "{{unowned_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_11
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.11
 
 - name: "SCORED | 6.1.12 | PATCH | Ensure no ungrouped files or directories exist"
-  command: /bin/true
+  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup -ls | awk '{print $11}'
   changed_when: false
+  failed_when: false
+  check_mode: no
+  register: ungrouped_files
   when:
       - ubuntu1604cis_rule_6_1_12
   tags:
@@ -157,11 +220,35 @@
       - scored
       - patch
       - rule_6.1.12
-      - notimplemented
+
+- debug:
+      msg: "{{ item }}"
+  with_items: "{{ungrouped_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_12
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.12
+
+- name: "SCORED | 6.1.12 | PATCH | Ensure no unowned files or directories exist"
+  command: chown :root {{ item }}
+  with_items: "{{ungrouped_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_12
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.1.12
 
 - name: "NOTSCORED | 6.1.13 | PATCH | Audit SUID executables"
-  command: /bin/true
-  changed_when: false
+  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000 -print
+  changed_when: False
+  failed_when: False
+  check_mode: no
+  register: suid_files
   when:
       - ubuntu1604cis_rule_6_1_13
   tags:
@@ -169,11 +256,24 @@
       - notscored
       - patch
       - rule_6.1.13
-      - notimplemented
+
+- debug:
+      msg: "Audit SUID {{ item }}"
+  with_items: "{{suid_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_13
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_6.1.13
 
 - name: "NOTSCORED | 6.1.14 | PATCH | Audit SGID executables"
-  command: /bin/true
-  changed_when: false
+  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000 -print
+  changed_when: False
+  failed_when: False
+  check_mode: no
+  register: gsuid_files
   when:
       - ubuntu1604cis_rule_6_1_14
   tags:
@@ -181,7 +281,17 @@
       - notscored
       - patch
       - rule_6.1.14
-      - notimplemented
+
+- debug:
+      msg: "Audit SGID {{ item }}"
+  with_items: "{{gsuid_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_1_14
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_6.1.14
 
 - name: "SCORED | 6.2.1 | PATCH | Ensure password fields are not empty"
   command: passwd -l {{ item }}
@@ -251,34 +361,54 @@
       - rule_6.2.5
 
 - name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1604cis_rule_6_2_6
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_6.2.6
-      - notimplemented
-
-- name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
   shell: |
-    set -o pipefail
-    sudopath=($(grep secure_path /etc/sudoers | cut -f2 -d= |cut -f2 -d\"))
-    IFS=:
-    for i in ${sudopath[*]}
-    do
-      if [ -d "$i" ]
-        then newsudopath+=($i)
+    if [ "`echo $PATH | grep :: `" != "" ]; then
+      echo "Empty Directory in PATH (::)"
+    fi
+
+    if [ "`echo $PATH | grep :$`" != "" ]; then
+      echo "Trailing : in PATH"
+    fi
+
+    p=`echo $PATH | sed -e 's/::/:/' -e 's/:$//' -e 's/:/ /g'`
+    set -- $p
+    while [ "$1" != "" ]; do
+      if [ "$1" = "." ]; then
+        echo "PATH contains ."
+        shift
+        continue
       fi
-     done
-    echo "${newsudopath[*]}"
+      if [ -d $1 ]; then
+        dirperm=`ls -ldH $1 | cut -f1 -d" "`
+        if [ `echo $dirperm | cut -c6 ` != "-" ]; then
+          echo "Group Write permission set on directory $1"
+        fi
+        if [ `echo $dirperm | cut -c9 ` != "-" ]; then
+          echo "Other Write permission set on directory $1"
+        fi
+        dirown=`ls -ldH $1 | awk '{print $3}'`
+        if [ "$dirown" != "root" ] ; then
+          echo $1
+        fi
+      else
+        echo $1
+      fi
+      shift
+    done
   args:
       executable: /bin/bash
-  register: fixsudo
-  changed_when: false
-  check_mode: false
+  register: root_path_integrity
+  when:
+      - ubuntu1604cis_rule_6_2_6
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.6
+
+- debug:
+      msg: "{{ item }} is not owned by root"
+  with_items: "{{root_path_integrity.stdout_lines}}"
   when:
       - ubuntu1604cis_rule_6_2_6
   tags:
@@ -288,13 +418,10 @@
       - rule_6.2.6
 
 - name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
-  lineinfile:
-      dest: /etc/sudoers
-      regexp: "(.*secure_path=).*"
-      line: '\1"{{ fixsudo.stdout_lines[0] }}"'
-      backrefs: true
+  command: chown root:root {{ item }}
+  with_items: "{{root_path_integrity.stdout_lines}}"
   when:
-      - fixsudo.stdout_lines[0]
+      - ubuntu1604cis_rule_6_2_6
   tags:
       - level1
       - scored
@@ -302,8 +429,16 @@
       - rule_6.2.6
 
 - name: "SCORED | 6.2.7 | PATCH | Ensure all users' home directories exist"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' | awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 " " $6 }' | while read user dir; do
+      if [ ! -d "$dir" ]; then
+        for i in $dir ; do mkdir -p $dir ; chown -R $user:$user $dir ; cp -R /etc/skel/. $dir ; done
+        echo "Create a home directory $dir of user $user which does not exist"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: home_directories_exist
   when:
       - ubuntu1604cis_rule_6_2_7
   tags:
@@ -311,11 +446,20 @@
       - scored
       - patch
       - rule_6.2.7
-      - notimplemented
+
+- debug:
+      msg: "{{home_directories_exist.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_7
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.7
 
 - name: "SCORED | 6.2.8 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
-  command: /bin/true
-  changed_when: false
+  shell: find /home/* -maxdepth 0 -type d
+  register: user_dirs
   when:
       - ubuntu1604cis_rule_6_2_8
   tags:
@@ -323,11 +467,36 @@
       - scored
       - patch
       - rule_6.2.8
-      - notimplemented
+
+- name: "SCORED | 6.2.8 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
+  file:
+      path: "{{ item }}"
+      mode: 0750
+  with_items: "{{ user_dirs.stdout_lines }}"
+  when:
+      - ubuntu1604cis_rule_6_2_8
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.8
 
 - name: "SCORED | 6.2.9 | PATCH | Ensure users own their home directories"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' | awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 " " $6 }' | while read user dir; do
+      if [ ! -d "$dir" ]; then
+        echo "The home directory ($dir) of user $user does not exist."
+      else
+        owner=$(stat -L -c "%U" "$dir")
+        if [ "$owner" != "$user" ]; then
+          echo "The home directory ($dir) of user $user is owned by $owner. Fixing ..."
+          for i in $dir ; do chown $user:$user $dir ; done
+        fi
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: home_directories_own
   when:
       - ubuntu1604cis_rule_6_2_9
   tags:
@@ -335,11 +504,40 @@
       - scored
       - patch
       - rule_6.2.9
-      - notimplemented
+
+- debug:
+      msg: "{{home_directories_own.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_9
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.9
 
 - name: "SCORED | 6.2.10 | PATCH | Ensure users' dot files are not group or world writable"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' | awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 " " $6 }' | while read user dir; do
+      if [ ! -d "$dir" ]; then
+        echo "The home directory ($dir) of user $user does not exist."
+      else
+        for file in $dir/.[A-Za-z0-9]*; do
+          if [ ! -h "$file" -a -f "$file" ]; then
+            fileperm=`ls -ld $file | cut -f1 -d" "`
+
+            if [ `echo $fileperm | cut -c6`  != "-" ]; then
+              echo "Group Write permission set on file $file"
+            fi
+            if [ `echo $fileperm | cut -c9`  != "-" ]; then
+              echo "Other Write permission set on file $file"
+            fi
+          fi
+        done
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: user_dot_files
   when:
       - ubuntu1604cis_rule_6_2_10
   tags:
@@ -347,7 +545,16 @@
       - scored
       - patch
       - rule_6.2.10
-      - notimplemented
+
+- debug:
+       msg: "{{user_dot_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_10
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.10
 
 - name: "SCORED | 6.2.11 | PATCH | Ensure no users have .forward files"
   file:
@@ -375,6 +582,62 @@
       - patch
       - rule_6.2.12
 
+- name: "SCORED | 6.2.13 | PATCH | Ensure users' .netrc Files are not group or world accessible"
+  shell: |
+    cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' |\
+    awk -F: '($7 != "/sbin/nologin" && $7 != "/bin/false") { print $1 " " $6 }' |\
+    while
+      read user dir; do
+        if [ ! -d "$dir" ]; then
+          echo "The home directory ($dir) of user $user does not exist."
+        else
+          for file in $dir/.netrc; do
+            if [ ! -h "$file" -a -f "$file" ]; then
+              fileperm=$(ls -ld $file | cut -f1 -d" ")
+              if [ "$(echo $fileperm | cut -c5)" != "-" ]; then
+                echo "Group Read set on $file"
+              fi
+              if [ "$(echo $fileperm | cut -c6)" != "-" ]; then
+                echo "Group Write set on $file"
+              fi
+              if [ "$(echo $fileperm | cut -c7)" != "-" ]; then
+                echo "Group Execute set on $file"
+              fi
+              if [ "$(echo $fileperm | cut -c8)" != "-" ]; then
+                echo "Other Read set on $file"
+              fi
+              if [ "$(echo $fileperm | cut -c9)" != "-" ]; then
+                echo "Other Write set on $file"
+              fi
+              if [ "$(echo $fileperm | cut -c10)" != "-" ]; then
+                echo "Other Execute set on $file"
+              fi
+            fi
+        done
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: user_netrc_files
+  when:
+      - ubuntu1604cis_rule_6_2_13
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.13
+
+- debug:
+       msg: "{{user_netrc_files.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_13
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.13
+
+
 - name: "SCORED | 6.2.14 | PATCH | Ensure no users have .rhosts files"
   file:
       state: absent
@@ -389,8 +652,17 @@
       - rule_6.2.14
 
 - name: "SCORED | 6.2.15 | PATCH | Ensure all groups in /etc/passwd exist in /etc/group"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    for i in $(cut -s -d: -f4 /etc/passwd | sort -u );
+    do
+      grep -q -P "^.*?:[^:]*:$i:" /etc/group
+      if [ $? -ne 0 ]; then
+        echo "Group $i is referenced by /etc/passwd but does not exist in /etc/group"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: passwd_groups
   when:
       - ubuntu1604cis_rule_6_2_15
   tags:
@@ -398,11 +670,30 @@
       - scored
       - patch
       - rule_6.2.15
-      - notimplemented
+
+- debug:
+      msg: "{{passwd_groups.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_15
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.15
 
 - name: "SCORED | 6.2.16 | PATCH | Ensure no duplicate UIDs exist"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/passwd | cut -f3 -d":" | sort -n | uniq -c | while read x ; do
+      [ -z "$x" ] && break
+      set - $x
+      if [ $1 -gt 1 ]; then
+        users=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs`
+        echo "Duplicate UID ($2): ${users}"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: duplicate_uids
   when:
       - ubuntu1604cis_rule_6_2_16
   tags:
@@ -410,11 +701,30 @@
       - scored
       - patch
       - rule_6.2.16
-      - notimplemented
+
+- debug:
+      msg: "{{duplicate_uids.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_16
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.16
 
 - name: "SCORED | 6.2.17 | PATCH | Ensure no duplicate GIDs exist"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/group | cut -f3 -d":" | sort -n | uniq -c | while read x ; do
+      [ -z "$x" ] && break
+      set - $x
+      if [ $1 -gt 1 ]; then
+        groups=`awk -F: '($3 == n) { print $1 }' n=$2 /etc/group | xargs`
+        echo "Duplicate GID ($2): ${groups}"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: duplicate_gids
   when:
       - ubuntu1604cis_rule_6_2_17
   tags:
@@ -422,11 +732,30 @@
       - scored
       - patch
       - rule_6.2.17
-      - notimplemented
+
+- debug:
+      msg: "{{duplicate_gids.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_17
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.17
 
 - name: "SCORED | 6.2.18 | PATCH | Ensure no duplicate user names exist"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/passwd | cut -f1 -d":" | sort -n | uniq -c | while read x ; do
+      [ -z "$x" ] && break
+      set - $x
+      if [ $1 -gt 1 ]; then
+        uids=`awk -F: '($1 == n) { print $3 }' n=$2 /etc/passwd | xargs`
+        echo "Duplicate User Name ($2): ${uids}"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: duplicate_users
   when:
       - ubuntu1604cis_rule_6_2_18
   tags:
@@ -434,11 +763,30 @@
       - scored
       - patch
       - rule_6.2.18
-      - notimplemented
+
+- debug:
+      msg: "{{duplicate_users.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_18
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.18
 
 - name: "SCORED | 6.2.19 | PATCH | Ensure no duplicate group names exist"
-  command: /bin/true
-  changed_when: false
+  shell: |
+    cat /etc/group | cut -f1 -d":" | sort -n | uniq -c | while read x ; do
+      [ -z "$x" ] && break
+      set - $x
+      if [ $1 -gt 1 ]; then
+        gids=`gawk -F: '($1 == n) { print $3 }' n=$2 /etc/group | xargs`
+        echo "Duplicate Group Name ($2): ${gids}"
+      fi
+    done
+  args:
+      executable: /bin/bash
+  register: duplicate_groups
   when:
       - ubuntu1604cis_rule_6_2_19
   tags:
@@ -446,4 +794,40 @@
       - scored
       - patch
       - rule_6.2.19
-      - notimplemented
+
+- debug:
+      msg: "{{duplicate_groups.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_19
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.19
+
+- name: "SCORED | 6.2.20 | PATCH | Ensure shadow group is empty"
+  shell: |
+    for gid in $(awk -F: '{if($1=="shadow") print $3}' /etc/group)
+    do
+      awk -F: '($4 == "'$gid'") { print }' /etc/passwd
+    done
+  args:
+      executable: /bin/bash
+  register: shadow_group_users
+  when:
+      - ubuntu1604cis_rule_6_2_20
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.20
+
+- debug:
+      msg: "{{shadow_group_users.stdout_lines}}"
+  when:
+      - ubuntu1604cis_rule_6_2_20
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.20
