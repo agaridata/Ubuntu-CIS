@@ -15,7 +15,6 @@
 - debug:
       msg: "{{system_file_permissions_warnings.stdout_lines}}"
   when:
-      - system_file_permissions_warnings.stdout_lines | length > 0
       - ubuntu1604cis_rule_6_1_1
   tags:
       - level2
@@ -631,7 +630,6 @@
 - debug:
        msg: "{{user_netrc_files.stdout_lines}}"
   when:
-      - user_netrc_files.stdout_lines | length > 0
       - ubuntu1604cis_rule_6_2_13
   tags:
       - level1
@@ -676,7 +674,6 @@
 - debug:
       msg: "{{passwd_groups.stdout_lines}}"
   when:
-      - passwd_groups.stdout_lines | length > 0
       - ubuntu1604cis_rule_6_2_15
   tags:
       - level1
@@ -828,7 +825,6 @@
 - debug:
       msg: "{{shadow_group_users.stdout_lines}}"
   when:
-      - shadow_group_users.stdout_lines | length > 0
       - ubuntu1604cis_rule_6_2_20
   tags:
       - level1
