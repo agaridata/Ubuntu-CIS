@@ -5,8 +5,9 @@
       value: 0
       state: present
       reload: true
-      ignoreerrors: true
-  when: not ubuntu1604cis_is_router
+      ignoreerrors: true  when:
+      - ubuntu1604cis_rule_3_1_1
+      - not ubuntu1604cis_is_router
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -27,7 +28,9 @@
   with_items:
       - { name: net.ipv4.conf.all.send_redirects, value: 0 }
       - { name: net.ipv4.conf.default.send_redirects, value: 0 }
-  when: not ubuntu1604cis_is_router
+  when:
+      - ubuntu1604cis_rule_3_1_2
+      - not ubuntu1604cis_is_router
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -48,6 +51,8 @@
   with_items:
       - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
       - { name: net.ipv4.conf.default.accept_source_route, value: 0 }
+  when:
+      - ubuntu1604cis_rule_3_2_1
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -68,6 +73,8 @@
   with_items:
       - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
       - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
+  when:
+      - ubuntu1604cis_rule_3_2_2
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -88,6 +95,8 @@
   with_items:
       - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
       - { name: net.ipv4.conf.default.secure_redirects, value: 0 }
+  when:
+      - ubuntu1604cis_rule_3_2_3
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -108,6 +117,8 @@
   with_items:
       - { name: net.ipv4.conf.all.log_martians, value: 1 }
       - { name: net.ipv4.conf.default.log_martians, value: 1 }
+  when:
+      - ubuntu1604cis_rule_3_2_4
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -124,6 +135,8 @@
       state: present
       reload: true
       ignoreerrors: true
+  when:
+      - ubuntu1604cis_rule_3_2_5
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -140,6 +153,8 @@
       state: present
       reload: true
       ignoreerrors: true
+  when:
+      - ubuntu1604cis_rule_3_2_6
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -160,6 +175,8 @@
   with_items:
       - { name: net.ipv4.conf.all.rp_filter, value: 1 }
       - { name: net.ipv4.conf.default.rp_filter, value: 1 }
+  when:
+      - ubuntu1604cis_rule_3_2_7
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -176,6 +193,8 @@
       state: present
       reload: true
       ignoreerrors: true
+  when:
+      - ubuntu1604cis_rule_3_2_8
   notify:
       - sysctl flush ipv4 route table
   tags:
@@ -196,7 +215,9 @@
   with_items:
       - { name: net.ipv6.conf.all.accept_ra, value: 0 }
       - { name: net.ipv6.conf.default.accept_ra, value: 0 }
-  when: ubuntu1604cis_ipv6_required
+  when:
+      - ubuntu1604cis_rule_3_3_1
+      - ubuntu1604cis_ipv6_required
   notify:
       - sysctl flush ipv6 route table
   tags:
@@ -217,7 +238,9 @@
   with_items:
       - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
       - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
-  when: ubuntu1604cis_ipv6_required
+  when:
+      - ubuntu1604cis_rule_3_3_2
+      - ubuntu1604cis_ipv6_required
   notify:
       - sysctl flush ipv6 route table
   tags:
@@ -233,7 +256,9 @@
       regexp: "^(#)?options ipv6 disable="
       line: "options ipv6 disable=1"
       create: true
-  when: not ubuntu1604cis_ipv6_required
+  when:
+      - ubuntu1604cis_rule_3_3_3
+      - not ubuntu1604cis_ipv6_required
   tags:
       - level1
       - notscored
@@ -245,6 +270,8 @@
       name: "{{ tcp_wrapper_package[ansible_os_family] }}"
       state: present
       install_recommends: false
+  when:
+      - ubuntu1604cis_rule_3_4_1
   tags:
       - level1
       - scored
@@ -258,6 +285,8 @@
       owner: root
       group: root
       mode: 0644
+  when:
+      - ubuntu1604cis_rule_3_4_2
   tags:
       - level1
       - scored
@@ -269,6 +298,8 @@
       dest: /etc/hosts.deny
       regexp: "^(#)?ALL"
       line: "ALL: ALL"
+  when:
+      - ubuntu1604cis_rule_3_4_3
   tags:
       - level1
       - scored
@@ -281,6 +312,8 @@
       owner: root
       group: root
       mode: 0644
+  when:
+      - ubuntu1604cis_rule_3_4_4
   tags:
       - level1
       - scored
@@ -293,6 +326,8 @@
       owner: root
       group: root
       mode: 0644
+  when:
+      - ubuntu1604cis_rule_3_4_5
   tags:
       - level1
       - scored
@@ -305,6 +340,8 @@
       regexp: "^(#)?install dccp(\\s|$)"
       line: "install dccp /bin/true"
       create: true
+  when:
+      - ubuntu1604cis_rule_3_5_1
   tags:
       - level1
       - notscored
@@ -317,6 +354,8 @@
       regexp: "^(#)?install sctp(\\s|$)"
       line: "install sctp /bin/true"
       create: true
+  when:
+      - ubuntu1604cis_rule_3_5_2
   tags:
       - level1
       - notscored
@@ -329,6 +368,8 @@
       regexp: "^(#)?install rds(\\s|$)"
       line: "install rds /bin/true"
       create: true
+  when:
+      - ubuntu1604cis_rule_3_5_3
   tags:
       - level1
       - notscored
@@ -341,6 +382,8 @@
       regexp: "^(#)?install tipc(\\s|$)"
       line: "install tipc /bin/true"
       create: true
+  when:
+      - ubuntu1604cis_rule_3_5_4
   tags:
       - level1
       - notscored
@@ -350,7 +393,7 @@
 - name: "SCORED | 3.6 | PATCH | Ensure firewalld is installed and started | CUSTOM"
   apt:
       name: firewalld
-      state: present
+      state: enabled
       install_recommends: false
   when:
       - ubuntu1604cis_firewall == "firewalld"
@@ -361,19 +404,6 @@
       - patch
       - rule_3.6
 
-- name: "SCORED | 3.6 | PATCH | Ensure firewalld is installed and started | CUSTOM"
-  service:
-      name: firewalld
-      state: started
-      enabled: true
-  when:
-      - ubuntu1604cis_firewall == "firewalld"
-      - ubuntu1604cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_3.6
 
 - name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed and started"
   apt:
@@ -383,6 +413,8 @@
   with_items:
       - 'iptables'
       - 'iptables-persistent'
+  when:
+      - ubuntu1604cis_rule_3_6_1
   tags:
       - level1
       - scored
@@ -417,6 +449,18 @@
       - patch
       - rule_3.6.2
 
+- name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
+  systemd:
+      name: "ufw"
+      state: enabled
+  when:
+      - ubuntu1604cis_firewall == "ufw"
+      - ubuntu1604cis_setup_firewall
+  tags:
+      - level1
+      - scored
+      - patch
+      
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
   lineinfile:
       name: "{{ iptables_rules_file }}"
@@ -428,6 +472,8 @@
       - '-P INPUT DROP'
       - '-P FORWARD DROP'
       - '-P OUTPUT DROP'
+  when:
+      - ubuntu1604cis_rule_3_6_3
   notify: restart iptables
   tags:
       - level1
@@ -446,6 +492,8 @@
       - '-A INPUT -i lo -j ACCEPT'
       - '-A OUTPUT -o lo -j ACCEPT'
       - '-A INPUT -s 127.0.0.0/8 -j DROP'
+  when:
+      - ubuntu1604cis_rule_3_6_3
   notify: restart iptables
   tags:
       - level1
@@ -467,6 +515,8 @@
       - '-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT'
       - '-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT'
       - '-A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT'
+  when:
+      - ubuntu1604cis_rule_3_6_4
   notify: restart iptables
   tags:
       - level1
@@ -497,6 +547,8 @@
       fi
   args:
       executable: /bin/bash
+  when:
+      - ubuntu1604cis_rule_3_6_5
   notify: restart iptables
   tags:
       - level1
@@ -508,6 +560,8 @@
   apt:
       name: rfkill
       state: present
+  when:
+      - ubuntu1604cis_rule_3_7
   tags:
       - level1
       - notscored
@@ -516,6 +570,8 @@
 
 - name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
   command: rfkill block wifi
+  when:
+      - ubuntu1604cis_rule_3_7
   tags:
       - level1
       - notscored

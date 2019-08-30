@@ -132,7 +132,7 @@ ubuntu1604cis_rule_3_3_1: true
 ubuntu1604cis_rule_3_3_2: true
 ubuntu1604cis_rule_3_3_3: true
 ubuntu1604cis_rule_3_4_1: true
-ubuntu1604cis_rule_3_4_2: true
+ubuntu1604cis_rule_3_4_2: false
 ubuntu1604cis_rule_3_4_3: true
 ubuntu1604cis_rule_3_4_4: true
 ubuntu1604cis_rule_3_4_5: true
@@ -140,16 +140,16 @@ ubuntu1604cis_rule_3_5_1: true
 ubuntu1604cis_rule_3_5_2: true
 ubuntu1604cis_rule_3_5_3: true
 ubuntu1604cis_rule_3_5_4: true
-ubuntu1604cis_rule_3_6_1: true
-ubuntu1604cis_rule_3_6_2: true
-ubuntu1604cis_rule_3_6_3: true
-ubuntu1604cis_rule_3_6_4: true
-ubuntu1604cis_rule_3_6_5: true
+ubuntu1604cis_rule_3_6_1: false
+ubuntu1604cis_rule_3_6_2: false
+ubuntu1604cis_rule_3_6_3: false
+ubuntu1604cis_rule_3_6_4: false
+ubuntu1604cis_rule_3_6_5: false
 
 # Section 4 rules
 ubuntu1604cis_rule_4_1_1_1: true
-ubuntu1604cis_rule_4_1_1_2: true
-ubuntu1604cis_rule_4_1_1_3: true
+ubuntu1604cis_rule_4_1_1_2: false
+ubuntu1604cis_rule_4_1_1_3: false
 ubuntu1604cis_rule_4_1_2: true
 ubuntu1604cis_rule_4_1_3: true
 ubuntu1604cis_rule_4_1_4: true
@@ -174,7 +174,7 @@ ubuntu1604cis_rule_4_2_1_3: true
 ubuntu1604cis_rule_4_2_1_4: true
 ubuntu1604cis_rule_4_2_1_5: true
 ubuntu1604cis_rule_4_2_2_1: true
-ubuntu1604cis_rule_4_2_2_2: true
+ubuntu1604cis_rule_4_2_2_2: false
 ubuntu1604cis_rule_4_2_2_3: true
 ubuntu1604cis_rule_4_2_2_4: true
 ubuntu1604cis_rule_4_2_2_5: true
@@ -334,7 +334,10 @@ ubuntu1604cis_host_allow:
   - "192.168.0.0/255.255.0.0"
   - "0.0.0.0/0.0.0.0"
 
-ubuntu1604cis_firewall: firewalld
+### Firewall
+ubuntu1604cis_setup_firewall: true
+ubuntu1604cis_firewall: ufw
+# ubuntu1604cis_firewall: firewalld
 # ubuntu1604cis_firewall: iptables
 
 ubuntu1604cis_firewall_services:
@@ -418,7 +421,7 @@ chrony_config_file:
   Debian: /etc/chrony/chrony.conf
 
 ### Firewall
-ubuntu1604cis_setup_firewall: false
+ubuntu1604cis_setup_firewall: true
 
 iptables_rules_file: /etc/iptables/rules.v4
 syslog_package: rsyslog
