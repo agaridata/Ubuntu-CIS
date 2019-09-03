@@ -450,10 +450,11 @@
       - patch
       - rule_3.6.2
 
-- name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
+- name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
   systemd:
       name: "ufw"
-      state: enabled
+      state: started
+      enabled: true
   when:
       - ubuntu1604cis_firewall == "ufw"
       - ubuntu1604cis_setup_firewall
