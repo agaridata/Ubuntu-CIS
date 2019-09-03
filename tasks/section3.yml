@@ -558,7 +558,7 @@
       - patch
       - rule_3.6.5
 
-- name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
+- name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled (install rfkill)"
   apt:
       name: rfkill
       state: present
