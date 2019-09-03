@@ -5,7 +5,8 @@
       value: 0
       state: present
       reload: true
-      ignoreerrors: true  when:
+      ignoreerrors: true
+  when:
       - ubuntu1604cis_rule_3_1_1
       - not ubuntu1604cis_is_router
   notify:
@@ -460,7 +461,7 @@
       - level1
       - scored
       - patch
-      
+
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
   lineinfile:
       name: "{{ iptables_rules_file }}"
