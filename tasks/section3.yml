@@ -463,6 +463,17 @@
       - scored
       - patch
 
+- name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
+  command: "ufw allow ssh"
+  when:
+      - ubuntu1604cis_firewall == "ufw"
+      - ubuntu1604cis_setup_firewall
+  tags:
+      - level1
+      - scored
+      - patch
+  become: true
+
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
   lineinfile:
       name: "{{ iptables_rules_file }}"
