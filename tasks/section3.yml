@@ -450,6 +450,23 @@
       - patch
       - rule_3.6.2
 
+- name: "uninstall ufw (missing iptable chain)"
+  apt:
+    name: ufw
+    state: absent
+  when:
+      - ubuntu1604cis_firewall == "ufw"
+      - ubuntu1604cis_setup_firewall
+
+- name: "install ufw (missing iptable chain)"
+  apt:
+    name: ufw
+    state: present
+    update_cache: true
+  when:
+      - ubuntu1604cis_firewall == "ufw"
+      - ubuntu1604cis_setup_firewall
+
 - name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
   systemd:
       name: "ufw"
