@@ -450,23 +450,6 @@
       - patch
       - rule_3.6.2
 
-- name: "uninstall ufw (missing iptable chain)"
-  apt:
-    name: ufw
-    state: absent
-  when:
-      - ubuntu1604cis_firewall == "ufw"
-      - ubuntu1604cis_setup_firewall
-
-- name: "install ufw (missing iptable chain)"
-  apt:
-    name: ufw
-    state: present
-    update_cache: true
-  when:
-      - ubuntu1604cis_firewall == "ufw"
-      - ubuntu1604cis_setup_firewall
-
 - name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
   systemd:
       name: "ufw"
@@ -483,7 +466,6 @@
 - name: "SCORED | 3.6 | PATCH | Ensure ufw is configured | CUSTOM"
   command: "{{ item }}"
   with_items:
-    - "ufw reset"
     - "ufw default deny incoming"
     - "ufw default allow outgoing"
     - "ufw allow 22"
@@ -498,20 +480,6 @@
       - level1
       - scored
       - patch
-  become: true
-
-- name: "SCORED | 3.6 | PATCH | Ensure ufw is enabled at boot | CUSTOM"
-  replace:
-    path: "/etc/ufw/ufw.conf"
-    regexp: "^ENABLED=no"
-    replace: "ENABLED=yes"
-  when:
-    - ubuntu1604cis_firewall == "ufw"
-    - ubuntu1604cis_setup_firewall
-  tags:
-    - level1
-    - scored
-    - patch
   become: true
 
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
