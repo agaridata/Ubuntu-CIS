@@ -421,9 +421,6 @@ chrony_config_file:
   RedHat: /etc/chrony.conf
   Debian: /etc/chrony/chrony.conf
 
-### Firewall
-ubuntu1604cis_setup_firewall: true
-
 iptables_rules_file: /etc/iptables/rules.v4
 syslog_package: rsyslog
 remote_logs_host_address: 192.168.0.1

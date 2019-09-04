@@ -486,9 +486,8 @@
   - name: "SCORED | 3.6 | PATCH | Ensure ufw is enabled at boot | CUSTOM"
     replace:
       path: "/etc/ufw/ufw.conf"
-      line: "ENABLED=yes"
       regexp: "^ENABLED=no"
-      create: yes
+      replace: "ENABLED=yes"
   when:
       - ubuntu1604cis_firewall == "ufw"
       - ubuntu1604cis_setup_firewall
