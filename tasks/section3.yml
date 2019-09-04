@@ -483,19 +483,19 @@
       - patch
   become: true
 
-  - name: "SCORED | 3.6 | PATCH | Ensure ufw is enabled at boot | CUSTOM"
-    replace:
-      path: "/etc/ufw/ufw.conf"
-      regexp: "^ENABLED=no"
-      replace: "ENABLED=yes"
-  when:
-      - ubuntu1604cis_firewall == "ufw"
-      - ubuntu1604cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-  become: true
+- name: "SCORED | 3.6 | PATCH | Ensure ufw is enabled at boot | CUSTOM"
+  replace:
+    path: "/etc/ufw/ufw.conf"
+    regexp: "^ENABLED=no"
+    replace: "ENABLED=yes"
+ when:
+    - ubuntu1604cis_firewall == "ufw"
+    - ubuntu1604cis_setup_firewall
+ tags:
+    - level1
+    - scored
+    - patch
+ become: true
 
 - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
   lineinfile:
