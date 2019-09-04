@@ -464,12 +464,13 @@
       - patch
 
 - name: "SCORED | 3.6 | PATCH | Ensure ufw is configured | CUSTOM"
-  command: "ufw allow {{ item }}"
+  command: "{{ item }}"
   with_items:
-    - 22
-    - 25
-    - 80
-    - 443
+    - "ufw enable"
+    - "ufw allow ssh"
+    - "ufw allow smtp"
+    - "ufw allow http"
+    - "ufw allow https"
   when:
       - ubuntu1604cis_firewall == "ufw"
       - ubuntu1604cis_setup_firewall
