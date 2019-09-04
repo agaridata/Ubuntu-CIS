@@ -463,8 +463,13 @@
       - scored
       - patch
 
-- name: "SCORED | 3.6 | PATCH | Ensure ufw is installed and started | CUSTOM"
-  command: "ufw allow ssh"
+- name: "SCORED | 3.6 | PATCH | Ensure ufw is configured | CUSTOM"
+  command: "ufw allow {{ item }}"
+  with_items:
+    - 22
+    - 25
+    - 80
+    - 443
   when:
       - ubuntu1604cis_firewall == "ufw"
       - ubuntu1604cis_setup_firewall
