@@ -464,7 +464,7 @@
       - patch
 
 - name: "SCORED | 3.6 | PATCH | Ensure ufw is configured | CUSTOM"
-  command: "ufw --force {{ item }}"
+  command: "ufw {{ item }}"
   with_items:
     - "default deny incoming"
     - "default allow outgoing"
@@ -472,7 +472,7 @@
     - "allow 25"
     - "allow 80"
     - "allow 443"
-    - "enable"
+    - "--force enable"
   when:
       - ubuntu1604cis_firewall == "ufw"
       - ubuntu1604cis_setup_firewall
