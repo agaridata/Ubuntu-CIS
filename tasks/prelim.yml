@@ -12,7 +12,7 @@
       msg: "Check if OS is Ubuntu 16.04 LTS (Xenial Xerus)"
   failed_when: ansible_distribution != "Ubuntu" and ansible_distribution_version !="16.04"
 
-- name: "PRELIM | nsure prerequired packages are installed"
+- name: "PRELIM | ensure prerequired packages are installed"
   apt:
       name: aptitude
       update_cache: true
