@@ -52,6 +52,11 @@
   when: ubuntu1604cis_section6
   tags: section6
 
+- include: agari_extras.yml
+  become: true
+  when: ubuntu1604cis_agari_extras
+  tags: agari_extras
+
 - include: post.yml
   become: true
   tags:
