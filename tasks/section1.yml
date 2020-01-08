@@ -531,9 +531,9 @@
 - name: "Configure aide"
   lineinfile:
     state: present
-      dest: /etc/aide.conf
-      insertafter: EOF
-      line: "{{item}}"
+    dest: /etc/aide.conf
+    insertafter: EOF
+    line: "{{item}}"
   become: true
   with_items:
     - '!/var/lib/lxcfs'
@@ -572,7 +572,7 @@
       day: "{{ ubuntu1604cis_aide_cron['aide_day'] | default('*') }}"
       month: "{{ ubuntu1604cis_aide_cron['aide_month'] | default('*') }}"
       weekday: "{{ ubuntu1604cis_aide_cron['aide_weekday'] | default('*') }}"
-      job: "{{ ubuntu1604cis_aide_cron['aide_job'] }}"
+     job: "{{ ubuntu1604cis_aide_cron['aide_job'] }}"
   when:
       - ubuntu1604cis_rule_1_3_2
   tags:
