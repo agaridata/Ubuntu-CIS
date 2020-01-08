@@ -528,20 +528,6 @@
       - patch
       - rule_1.3.1
 
-- name: "Configure aide"
-  lineinfile:
-    state: present
-    dest: /etc/aide.conf
-    insertafter: EOF
-    line: "{{item}}"
-  become: true
-  with_items:
-    - '!/var/lib/lxcfs'
-    - '!/run'
-    - '!/tmp'
-    - '!/var/log'
-    - '!/var/awslogs'
-
 - name: "SCORED | 1.3.1 | PATCH | Init AIDE"
   shell: aideinit && mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
   changed_when: false
@@ -583,6 +569,20 @@
       - patch
       - rule_1.3.2
 
+- name: "Configure aide"
+  lineinfile:
+    state: present
+    dest: /etc/aide.conf
+    insertafter: EOF
+    line: "{{item}}"
+  become: true
+  with_items:
+    - '!/var/lib/lxcfs'
+    - '!/run'
+    - '!/tmp'
+    - '!/var/log'
+    - '!/var/awslogs'
+    
 - name: "SCORED | 1.4.1 | PATCH | Ensure permissions on bootloader config are configured"
   file:
       path: "/boot/grub/grub.cfg"
