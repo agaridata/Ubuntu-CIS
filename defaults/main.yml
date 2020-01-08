@@ -9,8 +9,12 @@ ubuntu1604cis_section3: true
 ubuntu1604cis_section4: true
 ubuntu1604cis_section5: true
 ubuntu1604cis_section6: true
+ubuntu1604cis_agari_extras: true
 
 ubuntu1604cis_selinux_disable: false
+
+#Agari extras
+ubuntu1604cis_agari_extra_disable_ssh_password_auth: true
 
 # Ignore remount errors if you're building an image or are going to reboot anyway
 ubuntu1604cis_ignore_remount_errors: false
@@ -210,10 +214,10 @@ ubuntu1604cis_rule_5_3_1: true
 ubuntu1604cis_rule_5_3_2: true
 ubuntu1604cis_rule_5_3_3: true
 ubuntu1604cis_rule_5_3_4: true
-ubuntu1604cis_rule_5_4_1_1: true
+ubuntu1604cis_rule_5_4_1_1: false
 ubuntu1604cis_rule_5_4_1_2: true
 ubuntu1604cis_rule_5_4_1_3: true
-ubuntu1604cis_rule_5_4_1_4: true
+ubuntu1604cis_rule_5_4_1_4: false
 ubuntu1604cis_rule_5_4_2: true
 ubuntu1604cis_rule_5_4_3: true
 ubuntu1604cis_rule_5_4_4: true

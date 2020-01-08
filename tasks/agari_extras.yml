@@ -1,0 +1,11 @@
+- name: "Agari Extra | Ensure SSH PasswordAuthentication is disabled"
+  lineinfile:
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '^PasswordAuthentication'
+      line: 'PasswordAuthentication no'
+  when:
+      - ubuntu1604cis_agari_extra_disable_ssh_password_auth
+  tags:
+      - agari_extras
+      - sshd
