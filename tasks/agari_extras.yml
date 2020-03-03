@@ -5,7 +5,7 @@
       regexp: '^PasswordAuthentication'
       line: 'PasswordAuthentication no'
   when:
-      - ubuntu1604cis_agari_extra_disable_ssh_password_auth
+      - ubuntucis_agari_extra_disable_ssh_password_auth
   tags:
       - agari_extras
       - sshd

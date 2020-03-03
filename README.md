@@ -18,66 +18,66 @@ Role Variables
 --------------
 There are many role variables defined in defaults/main.yml. This list shows the most important.
 
-**ubuntu1604cis_notauto**: Run CIS checks that we typically do NOT want to automate due to the high probability of breaking the system (Default: false)
+**ubuntucis_notauto**: Run CIS checks that we typically do NOT want to automate due to the high probability of breaking the system (Default: false)
 
-**ubuntu1604cis_section1**: CIS - General Settings (Section 1) (Default: true)
+**ubuntucis_section1**: CIS - General Settings (Section 1) (Default: true)
 
-**ubuntu1604cis_section2**: CIS - Services settings (Section 2) (Default: true)
+**ubuntucis_section2**: CIS - Services settings (Section 2) (Default: true)
 
-**ubuntu1604cis_section3**: CIS - Network settings (Section 3) (Default: true)
+**ubuntucis_section3**: CIS - Network settings (Section 3) (Default: true)
 
-**ubuntu1604cis_section4**: CIS - Logging and Auditing settings (Section 4) (Default: true)
+**ubuntucis_section4**: CIS - Logging and Auditing settings (Section 4) (Default: true)
 
-**ubuntu1604cis_section5**: CIS - Access, Authentication and Authorization settings (Section 5) (Default: true)
+**ubuntucis_section5**: CIS - Access, Authentication and Authorization settings (Section 5) (Default: true)
 
-**ubuntu1604cis_section6**: CIS - System Maintenance settings (Section 6) (Default: true)
+**ubuntucis_section6**: CIS - System Maintenance settings (Section 6) (Default: true)
 
 ##### Disable all selinux functions
-`ubuntu1604cis_selinux_disable: false`
+`ubuntucis_selinux_disable: false`
 
 ##### Service variables:
 ###### These control whether a server should or should not be allowed to continue to run these services
 
 ```
-ubuntu1604cis_avahi_server: false
-ubuntu1604cis_cups_server: false
-ubuntu1604cis_dhcp_server: false
-ubuntu1604cis_ldap_server: false
-ubuntu1604cis_telnet_server: false
-ubuntu1604cis_nfs_server: false
-ubuntu1604cis_rpc_server: false
-ubuntu1604cis_ntalk_server: false
-ubuntu1604cis_rsyncd_server: false
-ubuntu1604cis_tftp_server: false
-ubuntu1604cis_rsync_server: false
-ubuntu1604cis_nis_server: false
-ubuntu1604cis_snmp_server: false
-ubuntu1604cis_squid_server: false
-ubuntu1604cis_smb_server: false
-ubuntu1604cis_dovecot_server: false
-ubuntu1604cis_apache2_server: false
-ubuntu1604cis_vsftpd_server: false
-ubuntu1604cis_named_server: false
+ubuntucis_avahi_server: false
+ubuntucis_cups_server: false
+ubuntucis_dhcp_server: false
+ubuntucis_ldap_server: false
+ubuntucis_telnet_server: false
+ubuntucis_nfs_server: false
+ubuntucis_rpc_server: false
+ubuntucis_ntalk_server: false
+ubuntucis_rsyncd_server: false
+ubuntucis_tftp_server: false
+ubuntucis_rsync_server: false
+ubuntucis_nis_server: false
+ubuntucis_snmp_server: false
+ubuntucis_squid_server: false
+ubuntucis_smb_server: false
+ubuntucis_dovecot_server: false
+ubuntucis_apache2_server: false
+ubuntucis_vsftpd_server: false
+ubuntucis_named_server: false
 ```
 
 ##### Designate server as a Mail server
-`ubuntu1604cis_is_mail_server: false`
+`ubuntucis_is_mail_server: false`
 
 
 ##### System network parameters (host only OR host and router)
-`ubuntu1604cis_is_router: false`
+`ubuntucis_is_router: false`
 
 
 ##### IPv6 required
-`ubuntu1604cis_ipv6_required: true`
+`ubuntucis_ipv6_required: true`
 
 
 ##### AIDE
-`ubuntu1604cis_config_aide: true`
+`ubuntucis_config_aide: true`
 
 ###### AIDE cron settings
 ```
-ubuntu1604cis_aide_cron:
+ubuntucis_aide_cron:
   cron_user: root
   cron_file: /etc/crontab
   aide_job: '/usr/sbin/aide --check'
@@ -89,28 +89,28 @@ ubuntu1604cis_aide_cron:
 ```
 
 ##### SELinux policy
-`ubuntu1604cis_selinux_pol: targeted`
+`ubuntucis_selinux_pol: targeted`
 
 
 ##### Set to 'true' if X Windows is needed in your environment
-`ubuntu1604cis_xwindows_required: no`
+`ubuntucis_xwindows_required: no`
 
 
 ##### Client application requirements
 ```
-ubuntu1604cis_ldap_utils_required: false
-ubuntu1604cis_telnet_required: false
-ubuntu1604cis_talk_required: false
-ubuntu1604cis_rsh_required: false
-ubuntu1604cis_nis_required: false
+ubuntucis_ldap_utils_required: false
+ubuntucis_telnet_required: false
+ubuntucis_talk_required: false
+ubuntucis_rsh_required: false
+ubuntucis_nis_required: false
 ```
 
 ##### Time Synchronization
 ```
-ubuntu1604cis_time_synchronization: chrony
-ubuntu1604cis_time_Synchronization: ntp
+ubuntucis_time_synchronization: chrony
+ubuntucis_time_Synchronization: ntp
 
-ubuntu1604cis_time_synchronization_servers:
+ubuntucis_time_synchronization_servers:
     - 0.pool.ntp.org
     - 1.pool.ntp.org
     - 2.pool.ntp.org
@@ -119,15 +119,15 @@ ubuntu1604cis_time_synchronization_servers:
 
 ##### 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured
 ```
-ubuntu1604cis_host_allow:
+ubuntucis_host_allow:
   - "10.0.0.0/255.0.0.0"
   - "172.16.0.0/255.240.0.0"
   - "192.168.0.0/255.255.0.0"
 ```
 
 ```
-ubuntu1604cis_firewall: firewalld
-ubuntu1604cis_firewall: iptables
+ubuntucis_firewall: firewalld
+ubuntucis_firewall: iptables
 ```
 
 

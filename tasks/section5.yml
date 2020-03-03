@@ -4,7 +4,7 @@
       name: "{{ cron_service[ansible_os_family] }}"
       enabled: true
   when:
-      - ubuntu1604cis_rule_5_1_1
+      - ubuntucis_rule_5_1_1
   tags:
       - level1
       - scored
@@ -19,7 +19,7 @@
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_5_1_2
+      - ubuntucis_rule_5_1_2
   tags:
       - level1
       - scored
@@ -35,7 +35,7 @@
       group: root
       mode: 0700
   when:
-      - ubuntu1604cis_rule_5_1_3
+      - ubuntucis_rule_5_1_3
   tags:
       - level1
       - scored
@@ -51,7 +51,7 @@
       group: root
       mode: 0700
   when:
-      - ubuntu1604cis_rule_5_1_4
+      - ubuntucis_rule_5_1_4
   tags:
       - level1
       - scored
@@ -67,7 +67,7 @@
       group: root
       mode: 0700
   when:
-      - ubuntu1604cis_rule_5_1_5
+      - ubuntucis_rule_5_1_5
   tags:
       - level1
       - scored
@@ -83,7 +83,7 @@
       group: root
       mode: 0700
   when:
-      - ubuntu1604cis_rule_5_1_6
+      - ubuntucis_rule_5_1_6
   tags:
       - level1
       - scored
@@ -99,7 +99,7 @@
       group: root
       mode: 0700
   when:
-      - ubuntu1604cis_rule_5_1_7
+      - ubuntucis_rule_5_1_7
   tags:
       - level1
       - scored
@@ -145,7 +145,7 @@
             group: root
             mode: 0600
   when:
-      - ubuntu1604cis_rule_5_1_8
+      - ubuntucis_rule_5_1_8
   tags:
       - level1
       - scored
@@ -161,7 +161,7 @@
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_5_2_1
+      - ubuntucis_rule_5_2_1
   tags:
       - level1
       - scored
@@ -176,7 +176,7 @@
       regexp: '^Protocol'
       line: 'Protocol 2'
   when:
-      - ubuntu1604cis_rule_5_2_2
+      - ubuntucis_rule_5_2_2
   tags:
       - level1
       - scored
@@ -191,7 +191,7 @@
       regexp: '^LogLevel'
       line: 'LogLevel INFO'
   when:
-      - ubuntu1604cis_rule_5_2_3
+      - ubuntucis_rule_5_2_3
   tags:
       - level1
       - scored
@@ -206,7 +206,7 @@
       regexp: '^X11Forwarding'
       line: 'X11Forwarding no'
   when:
-      - ubuntu1604cis_rule_5_2_4
+      - ubuntucis_rule_5_2_4
   tags:
       - level1
       - scored
@@ -221,7 +221,7 @@
       regexp: '^(#)?MaxAuthTries \d'
       line: 'MaxAuthTries 4'
   when:
-      - ubuntu1604cis_rule_5_2_5
+      - ubuntucis_rule_5_2_5
   tags:
       - level1
       - scored
@@ -236,7 +236,7 @@
       regexp: '^IgnoreRhosts'
       line: 'IgnoreRhosts yes'
   when:
-      - ubuntu1604cis_rule_5_2_6
+      - ubuntucis_rule_5_2_6
   tags:
       - level1
       - scored
@@ -251,7 +251,7 @@
       regexp: '^HostbasedAuthentication'
       line: 'HostbasedAuthentication no'
   when:
-      - ubuntu1604cis_rule_5_2_7
+      - ubuntucis_rule_5_2_7
   tags:
       - level1
       - scored
@@ -266,7 +266,7 @@
       regexp: '^PermitRootLogin'
       line: 'PermitRootLogin no'
   when:
-      - ubuntu1604cis_rule_5_2_8
+      - ubuntucis_rule_5_2_8
   tags:
       - level1
       - scored
@@ -281,7 +281,7 @@
       regexp: '^PermitEmptyPasswords'
       line: 'PermitEmptyPasswords no'
   when:
-      - ubuntu1604cis_rule_5_2_9
+      - ubuntucis_rule_5_2_9
   tags:
       - level1
       - scored
@@ -296,7 +296,7 @@
       regexp: '^PermitUserEnvironment'
       line: 'PermitUserEnvironment no'
   when:
-      - ubuntu1604cis_rule_5_2_10
+      - ubuntucis_rule_5_2_10
   tags:
       - level1
       - scored
@@ -311,7 +311,7 @@
       regexp: '^MACs'
       line: 'MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com'
   when:
-      - ubuntu1604cis_rule_5_2_11
+      - ubuntucis_rule_5_2_11
   tags:
       - level1
       - scored
@@ -326,16 +326,16 @@
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^ClientAliveInterval'
-            line: "ClientAliveInterval {{ ubuntu1604cis_sshd['clientaliveinterval'] }}"
+            line: "ClientAliveInterval {{ ubuntucis_sshd['clientaliveinterval'] }}"
 
       - name: "SCORED | 5.2.12 | PATCH | Ensure SSH ClientAliveCountMax set to <= 3"
         lineinfile:
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^ClientAliveCountMax'
-            line: "ClientAliveCountMax {{ ubuntu1604cis_sshd['clientalivecountmax'] }}"
+            line: "ClientAliveCountMax {{ ubuntucis_sshd['clientalivecountmax'] }}"
   when:
-      - ubuntu1604cis_rule_5_2_12
+      - ubuntucis_rule_5_2_12
   tags:
       - level1
       - scored
@@ -350,7 +350,7 @@
       regexp: '^LoginGraceTime'
       line: "LoginGraceTime 60"
   when:
-      - ubuntu1604cis_rule_5_2_13
+      - ubuntucis_rule_5_2_13
   tags:
       - level1
       - scored
@@ -365,46 +365,46 @@
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^AllowUsers'
-            line: "AllowUsers {{ ubuntu1604cis_sshd['allowusers'] }}"
+            line: "AllowUsers {{ ubuntucis_sshd['allowusers'] }}"
         notify:
             - restart sshd
         when:
-            - "ubuntu1604cis_sshd['allowusers']|default('')"
+            - "ubuntucis_sshd['allowusers']|default('')"
 
       - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited - allowgroups"
         lineinfile:
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^AllowGroups'
-            line: "AllowGroups {{ ubuntu1604cis_sshd['allowgroups'] }}"
+            line: "AllowGroups {{ ubuntucis_sshd['allowgroups'] }}"
         notify:
             - restart sshd
         when:
-            - "ubuntu1604cis_sshd['allowgroups']|default('')"
+            - "ubuntucis_sshd['allowgroups']|default('')"
 
       - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited - denyusers"
         lineinfile:
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^DenyUsers'
-            line: "DenyUsers {{ ubuntu1604cis_sshd['denyusers'] }}"
+            line: "DenyUsers {{ ubuntucis_sshd['denyusers'] }}"
         notify:
             - restart sshd
         when:
-            - "ubuntu1604cis_sshd['denyusers']|default('')"
+            - "ubuntucis_sshd['denyusers']|default('')"
 
       - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited - denygroups"
         lineinfile:
             state: present
             dest: /etc/ssh/sshd_config
             regexp: '^DenyGroups'
-            line: "DenyGroups {{ ubuntu1604cis_sshd['denygroups'] }}"
+            line: "DenyGroups {{ ubuntucis_sshd['denygroups'] }}"
         notify:
             - restart sshd
         when:
-            - "ubuntu1604cis_sshd['denygroups']|default('')"
+            - "ubuntucis_sshd['denygroups']|default('')"
   when:
-      - ubuntu1604cis_rule_5_2_14
+      - ubuntucis_rule_5_2_14
   tags:
       - level1
       - scored
@@ -419,7 +419,7 @@
       regexp: '^Banner'
       line: 'Banner /etc/issue.net'
   when:
-      - ubuntu1604cis_rule_5_2_15
+      - ubuntucis_rule_5_2_15
   tags:
       - level1
       - scored
@@ -448,7 +448,7 @@
             - { key: 'ocredit', value: '-1' }
             - { key: 'lcredit', value: '-1' }
   when:
-      - ubuntu1604cis_rule_5_3_1
+      - ubuntucis_rule_5_3_1
   tags:
       - level1
       - scored
@@ -462,7 +462,7 @@
       insertbefore: BOF
       line: 'auth required pam_tally2.so onerr=fail audit silent deny=5 unlock_time=900'
   when:
-      - ubuntu1604cis_rule_5_3_2
+      - ubuntucis_rule_5_3_2
   tags:
       - level1
       - scored
@@ -476,7 +476,7 @@
       insertbefore: BOF
       line: 'password sufficient pam_unix.so remember=5'
   when:
-      - ubuntu1604cis_rule_5_3_3
+      - ubuntucis_rule_5_3_3
   tags:
       - level1
       - scored
@@ -488,7 +488,7 @@
   changed_when: false
   failed_when: false
   when:
-      - ubuntu1604cis_rule_5_3_4
+      - ubuntucis_rule_5_3_4
   tags:
       - level1
       - scored
@@ -500,9 +500,9 @@
       state: present
       dest: /etc/login.defs
       regexp: '^PASS_MAX_DAYS'
-      line: "PASS_MAX_DAYS {{ ubuntu1604cis_pass['max_days'] }}"
+      line: "PASS_MAX_DAYS {{ ubuntucis_pass['max_days'] }}"
   when:
-      - ubuntu1604cis_rule_5_4_1_1
+      - ubuntucis_rule_5_4_1_1
   tags:
       - level1
       - scored
@@ -514,9 +514,9 @@
       state: present
       dest: /etc/login.defs
       regexp: '^PASS_MIN_DAYS'
-      line: "PASS_MIN_DAYS {{ ubuntu1604cis_pass['min_days'] }}"
+      line: "PASS_MIN_DAYS {{ ubuntucis_pass['min_days'] }}"
   when:
-      - ubuntu1604cis_rule_5_4_1_2
+      - ubuntucis_rule_5_4_1_2
   tags:
       - level1
       - scored
@@ -528,9 +528,9 @@
       state: present
       dest: /etc/login.defs
       regexp: '^PASS_WARN_AGE'
-      line: "PASS_WARN_AGE {{ ubuntu1604cis_pass['warn_age'] }}"
+      line: "PASS_WARN_AGE {{ ubuntucis_pass['warn_age'] }}"
   when:
-      - ubuntu1604cis_rule_5_4_1_3
+      - ubuntucis_rule_5_4_1_3
   tags:
       - level1
       - scored
@@ -544,7 +544,7 @@
       line: 'INACTIVE=30'
       state: present
   when:
-      - ubuntu1604cis_rule_5_4_1_4
+      - ubuntucis_rule_5_4_1_4
   tags:
       - level1
       - scored
@@ -554,7 +554,7 @@
 - name: "SCORED | 5.4.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
   shell: for i in $(egrep ^[^:]+:[^\!*] /etc/shadow | cut "-d:" -f1) ; do chage -I 30 "$i" ; done
   when:
-      - ubuntu1604cis_rule_5_4_1_4
+      - ubuntucis_rule_5_4_1_4
   tags:
       - level1
       - scored
@@ -566,7 +566,7 @@
   register: system_acounts
   changed_when: False
   when:
-      - ubuntu1604cis_rule_5_4_2
+      - ubuntucis_rule_5_4_2
   tags:
       - level1
       - patch
@@ -586,7 +586,7 @@
   args:
       executable: /bin/bash
   when:
-      - ubuntu1604cis_rule_5_4_2
+      - ubuntucis_rule_5_4_2
       - system_acounts.stdout != ""
   tags:
       - level1
@@ -599,7 +599,7 @@
   changed_when: false
   failed_when: false
   when:
-      - ubuntu1604cis_rule_5_4_3
+      - ubuntucis_rule_5_4_3
   tags:
       - level1
       - patch
@@ -627,7 +627,7 @@
             regexp: '(^\s+umask) 002'
             replace: '\1 027'
   when:
-      - ubuntu1604cis_rule_5_4_4
+      - ubuntucis_rule_5_4_4
   tags:
       - level1
       - patch
@@ -641,7 +641,7 @@
       regexp: '^TMOUT'
       line: 'TMOUT=600'
   when:
-      - ubuntu1604cis_rule_5_4_5
+      - ubuntucis_rule_5_4_5
   tags:
       - level1
       - scored
@@ -653,7 +653,7 @@
       path: /etc/securetty
   register: securetty_file
   when:
-      - ubuntu1604cis_rule_5_5
+      - ubuntucis_rule_5_5
   tags:
       - level1
       - patch
@@ -666,7 +666,7 @@
       regexp: '(.*)'
       replace: '#\1'
   when:
-      - ubuntu1604cis_rule_5_5
+      - ubuntucis_rule_5_5
       - securetty_file.stat.exists == True
   tags:
       - level1
@@ -680,7 +680,7 @@
       regexp: '(#console|#tty[0-99]|#vc[0-99])'
       replace: '\1'
   when:
-      - ubuntu1604cis_rule_5_5
+      - ubuntucis_rule_5_5
       - securetty_file.stat.exists == True
   tags:
       - level1
@@ -695,7 +695,7 @@
       regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
       line: "auth           required        pam_wheel.so use_uid"
   when:
-      - ubuntu1604cis_rule_5_6
+      - ubuntucis_rule_5_6
   tags:
       - level1
       - patch
@@ -707,7 +707,7 @@
       name: root
       groups: wheel
   when:
-      - ubuntu1604cis_rule_5_6
+      - ubuntucis_rule_5_6
   tags:
       - level1
       - patch

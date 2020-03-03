@@ -26,7 +26,7 @@
       masked: false
       state: reloaded
   when: ansible_virtualization_type != "docker"
-  ignore_errors: "{{ ubuntu1604cis_ignore_remount_errors }}"
+  ignore_errors: "{{ ubuntucis_ignore_remount_errors }}"
 
 - name: systemd restart var-tmp.mount
   become: true
@@ -36,7 +36,7 @@
       enabled: true
       masked: false
       state: reloaded
-  ignore_errors: "{{ ubuntu1604cis_ignore_remount_errors }}"
+  ignore_errors: "{{ ubuntucis_ignore_remount_errors }}"
 
 - name: generate new grub config
   become: true
@@ -70,7 +70,7 @@
       name: auditd
       state: restarted
   when:
-      - not ubuntu1604cis_skip_for_travis
+      - not ubuntucis_skip_for_travis
   tags:
       - skip_ansible_lint
   changed_when: False
@@ -80,7 +80,7 @@
   become: true
   command: /sbin/augenrules --load
   when:
-      - not ubuntu1604cis_skip_for_travis
+      - not ubuntucis_skip_for_travis
   tags:
       - skip_ansible_lint
 

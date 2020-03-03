@@ -6,7 +6,7 @@
       line: "max_log_file = 10"
       state: present
   when:
-      - ubuntu1604cis_rule_4_1_1_1
+      - ubuntucis_rule_4_1_1_1
   notify:
       - restart auditd
   tags:
@@ -20,10 +20,10 @@
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^admin_space_left_action"
-      line: "admin_space_left_action = {{ ubuntu1604cis_auditd['admin_space_left_action'] }}"
+      line: "admin_space_left_action = {{ ubuntucis_auditd['admin_space_left_action'] }}"
       state: present
   when:
-      - ubuntu1604cis_rule_4_1_1_2
+      - ubuntucis_rule_4_1_1_2
   notify:
       - restart auditd
   tags:
@@ -40,7 +40,7 @@
       line: "space_left_action = email"
       state: present
   when:
-      - ubuntu1604cis_rule_4_1_1_2
+      - ubuntucis_rule_4_1_1_2
   notify:
       - restart auditd
   tags:
@@ -54,10 +54,10 @@
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^max_log_file_action"
-      line: "max_log_file_action = {{ ubuntu1604cis_auditd['max_log_file_action'] }}"
+      line: "max_log_file_action = {{ ubuntucis_auditd['max_log_file_action'] }}"
       state: present
   when:
-      - ubuntu1604cis_rule_4_1_1_3
+      - ubuntucis_rule_4_1_1_3
   notify:
       - restart auditd
   tags:
@@ -73,8 +73,8 @@
       state: started
       enabled: true
   when:
-      - not ubuntu1604cis_skip_for_travis
-      - ubuntu1604cis_rule_4_1_2
+      - not ubuntucis_skip_for_travis
+      - ubuntucis_rule_4_1_2
   tags:
       - level2
       - scored
@@ -90,7 +90,7 @@
       follow: true
   ignore_errors: true
   when:
-      - ubuntu1604cis_rule_4_1_3
+      - ubuntucis_rule_4_1_3
   notify:
       - generate new grub config
   tags:
@@ -102,13 +102,13 @@
 
 - name: "SCORED | 4.1.4 | PATCH | Ensure events that modify date and time information are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_4.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_4.rules
+      src: audit/ubuntucis_rule_4_1_4.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_4.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_4
+      - ubuntucis_rule_4_1_4
   notify:
       - load audit rules
       - restart auditd
@@ -121,13 +121,13 @@
 
 - name: "SCORED | 4.1.5 | PATCH | Ensure events that modify user/group information are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_5.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_5.rules
+      src: audit/ubuntucis_rule_4_1_5.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_5.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_5
+      - ubuntucis_rule_4_1_5
   notify:
       - load audit rules
       - restart auditd
@@ -140,13 +140,13 @@
 
 - name: "SCORED | 4.1.6 | PATCH | Ensure events that modify the system's network environment are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_6.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_6.rules
+      src: audit/ubuntucis_rule_4_1_6.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_6.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_6
+      - ubuntucis_rule_4_1_6
   notify:
       - load audit rules
       - restart auditd
@@ -159,13 +159,13 @@
 
 - name: "SCORED | 4.1.7 | PATCH | Ensure events that modify the system's Mandatory Access Controls are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_7.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_7.rules
+      src: audit/ubuntucis_rule_4_1_7.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_7.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_7
+      - ubuntucis_rule_4_1_7
   notify:
       - load audit rules
       - restart auditd
@@ -178,13 +178,13 @@
 
 - name: "SCORED | 4.1.8 | PATCH | Ensure login and logout events are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_8.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_8.rules
+      src: audit/ubuntucis_rule_4_1_8.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_8.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_8
+      - ubuntucis_rule_4_1_8
   notify:
       - load audit rules
       - restart auditd
@@ -197,13 +197,13 @@
 
 - name: "SCORED | 4.1.9 | PATCH | Ensure session initiation information is collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_9.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_9.rules
+      src: audit/ubuntucis_rule_4_1_9.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_9.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_9
+      - ubuntucis_rule_4_1_9
   notify:
       - load audit rules
       - restart auditd
@@ -216,13 +216,13 @@
 
 - name: "SCORED | 4.1.10 | PATCH | Ensure discretionary access control permission modification events are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_10.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_10.rules
+      src: audit/ubuntucis_rule_4_1_10.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_10.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_10
+      - ubuntucis_rule_4_1_10
   notify:
       - load audit rules
       - restart auditd
@@ -235,13 +235,13 @@
 
 - name: "SCORED | 4.1.11 | PATCH | Ensure unsuccessful unauthorized file access attempts are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_11.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_11.rules
+      src: audit/ubuntucis_rule_4_1_11.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_11.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_11
+      - ubuntucis_rule_4_1_11
   notify:
       - load audit rules
       - restart auditd
@@ -263,8 +263,8 @@
 
       - name: "SCORED | 4.1.12 | PATCH | Ensure use of privileged commands is collected"
         template:
-            src: audit/ubuntu1604cis_rule_4_1_12.rules.j2
-            dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_12.rules
+            src: audit/ubuntucis_rule_4_1_12.rules.j2
+            dest: /etc/audit/rules.d/ubuntucis_rule_4_1_12.rules
             owner: root
             group: root
             mode: 0600
@@ -272,7 +272,7 @@
             - load audit rules
             - restart auditd
   when:
-      - ubuntu1604cis_rule_4_1_12
+      - ubuntucis_rule_4_1_12
   tags:
       - level2
       - scored
@@ -282,13 +282,13 @@
 
 - name: "SCORED | 4.1.13 | PATCH | Ensure successful file system mounts are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_13.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_13.rules
+      src: audit/ubuntucis_rule_4_1_13.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_13.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_13
+      - ubuntucis_rule_4_1_13
   notify:
       - load audit rules
       - restart auditd
@@ -301,13 +301,13 @@
 
 - name: "SCORED | 4.1.14 | PATCH | Ensure file deletion events by users are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_14.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_14.rules
+      src: audit/ubuntucis_rule_4_1_14.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_14.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_14
+      - ubuntucis_rule_4_1_14
   notify:
       - load audit rules
       - restart auditd
@@ -320,13 +320,13 @@
 
 - name: "SCORED | 4.1.15 | PATCH | Ensure changes to system administration scope (sudoers) is collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_15.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_15.rules
+      src: audit/ubuntucis_rule_4_1_15.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_15.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_15
+      - ubuntucis_rule_4_1_15
   notify:
       - load audit rules
       - restart auditd
@@ -339,13 +339,13 @@
 
 - name: "SCORED | 4.1.16 | PATCH | Ensure system administrator actions (sudolog) are collected"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_16.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_16.rules
+      src: audit/ubuntucis_rule_4_1_16.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_16.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_16
+      - ubuntucis_rule_4_1_16
   notify:
       - load audit rules
       - restart auditd
@@ -361,7 +361,7 @@
       name: auditd
       state: present
   when:
-      - ubuntu1604cis_rule_4_1_17
+      - ubuntucis_rule_4_1_17
   tags:
       - level2
       - scored
@@ -381,7 +381,7 @@
       - '-w /sbin/modprobe -p x -k modules'
       - '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules'
   when:
-      - ubuntu1604cis_rule_4_1_17
+      - ubuntucis_rule_4_1_17
   notify: restart auditd
   tags:
       - level2
@@ -392,13 +392,13 @@
 
 - name: "SCORED | 4.1.18 | PATCH | Ensure the audit configuration is immutable"
   template:
-      src: audit/ubuntu1604cis_rule_4_1_18.rules.j2
-      dest: /etc/audit/rules.d/ubuntu1604cis_rule_4_1_18.rules
+      src: audit/ubuntucis_rule_4_1_18.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_18.rules
       owner: root
       group: root
       mode: 0600
   when:
-      - ubuntu1604cis_rule_4_1_18
+      - ubuntucis_rule_4_1_18
   notify:
       - load audit rules
       - restart auditd
@@ -411,11 +411,11 @@
 
 - name: "SCORED | 4.2.3 | PATCH | Ensure rsyslog or syslog-ng is installed"
   apt:
-      name: "{{ ubuntu1604cis_syslog }}"
+      name: "{{ ubuntucis_syslog }}"
       state: present
       install_recommends: false
   when:
-      - ubuntu1604cis_rule_4_2_3
+      - ubuntucis_rule_4_2_3
   tags:
       - level1
       - scored
@@ -428,7 +428,7 @@
       name: "{{ syslog_package }}"
       state: present
   when:
-      - ubuntu1604cis_rule_4_2_1_1
+      - ubuntucis_rule_4_2_1_1
   tags:
       - level1
       - scored
@@ -443,7 +443,7 @@
   failed_when: False
   check_mode: no
   when:
-      - ubuntu1604cis_rule_4_2_1_1
+      - ubuntucis_rule_4_2_1_1
   tags:
       - level1
       - scored
@@ -457,7 +457,7 @@
       state: started
       enabled: yes
   when:
-      - ubuntu1604cis_rule_4_2_1_1
+      - ubuntucis_rule_4_2_1_1
       - syslog_package.rc == 0
   tags:
       - level1
@@ -488,7 +488,7 @@
       - 'local4,local5.* -/var/log/localmessages'
       - 'local6,local7.* -/var/log/localmessages'
   when:
-      - ubuntu1604cis_rule_4_2_1_2
+      - ubuntucis_rule_4_2_1_2
       - syslog_package.rc == 0
   notify: restart rsyslog
   tags:
@@ -504,7 +504,7 @@
       regexp: '^\$FileCreateMode'
       line: '$FileCreateMode 0640'
   when:
-      - ubuntu1604cis_rule_4_2_1_3
+      - ubuntucis_rule_4_2_1_3
   tags:
       - level1
       - scored
@@ -519,7 +519,7 @@
   failed_when: False
   check_mode: no
   when:
-      - ubuntu1604cis_rule_4_2_1_4
+      - ubuntucis_rule_4_2_1_4
   tags:
       - level1
       - scored
@@ -534,7 +534,7 @@
       insertafter: EOF
       state: present
   when:
-      - ubuntu1604cis_rule_4_2_1_4
+      - ubuntucis_rule_4_2_1_4
       - remoteloghost.rc == 1
       - syslog_package.rc == 0
   notify: restart rsyslog
@@ -551,7 +551,7 @@
   failed_when: False
   check_mode: no
   when:
-      - ubuntu1604cis_rule_4_2_1_5
+      - ubuntucis_rule_4_2_1_5
   tags:
       - level1
       - notscored
@@ -570,7 +570,7 @@
       - '$InputTCPServerRun 514'
   notify: restart rsyslog
   when:
-      - ubuntu1604cis_rule_4_2_1_5
+      - ubuntucis_rule_4_2_1_5
       - moadloadpresent.rc == 0
       - syslog_package.rc == 0
   tags:
@@ -587,7 +587,7 @@
   failed_when: False
   check_mode: no
   when:
-      - ubuntu1604cis_rule_4_2_2_1
+      - ubuntucis_rule_4_2_2_1
   tags:
       - level1
       - scored
@@ -600,7 +600,7 @@
       name: syslog-ng
       enabled: yes
   when:
-      - ubuntu1604cis_rule_4_2_2_1
+      - ubuntucis_rule_4_2_2_1
       - syslogng_package.rc == 0
   tags:
       - level1
@@ -621,7 +621,7 @@
       - 'filter f_acpid_full { match("^\acpid:"); };'
       - 'filter f_netmgm { match("^NetworkManager:"); };'
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -644,7 +644,7 @@
       - 'destination d_warn { file("/var/log/warn" fsync(yes)); };'
       - 'destination d_devnull { };'
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -673,7 +673,7 @@
       - 'log { source(s_src); filter(f_warn); destination(d_warn); };'
   changed_when: False
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -693,7 +693,7 @@
       - '-A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG --log-prefix "Iptables: INPUT packet died: "'
       - '-A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG --log-prefix "Iptables: FORWARD packet died: "'
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   notify: restart iptables
   tags:
@@ -715,7 +715,7 @@
       - warn
       - localmessages
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   tags:
       - level1
@@ -738,7 +738,7 @@
       - warn
       - localmessages
   when:
-      - ubuntu1604cis_rule_4_2_2_2
+      - ubuntucis_rule_4_2_2_2
       - syslogng_package.rc == 0
   tags:
       - level1
@@ -750,7 +750,7 @@
 - name: "SCORED | 4.2.2.3 | PATCH | Ensure syslog-ng default file permissions configured"
   command: sed -i '/\t  owner("root"); group("adm"); perm(0640); stats_freq(0);\|\t  bad_hostname("^gconfd$");/d' /etc/syslog-ng/syslog-ng.conf
   when:
-      - ubuntu1604cis_rule_4_2_2_3
+      - ubuntucis_rule_4_2_2_3
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -766,7 +766,7 @@
       regexp: '^options'
       line: 'options { chain_hostnames(off); flush_lines(0); use_dns(no); use_fqdn(no); owner("root"); group("adm"); perm(0640); stats_freq(0); bad_hostname("^gconfd$");'
   when:
-      - ubuntu1604cis_rule_4_2_2_3
+      - ubuntucis_rule_4_2_2_3
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -783,7 +783,7 @@
       insertafter: '^#destination d_net'
       line: 'destination logserver { tcp("{{ remote_logs_host_address }}" port(514)); }; log { source(s_src); destination(logserver); };'
   when:
-      - ubuntu1604cis_rule_4_2_2_4
+      - ubuntucis_rule_4_2_2_4
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -803,7 +803,7 @@
     - 'destination remote { file("/var/log/remote/${FULLHOST}-log"); };'
     - 'log { source(net); destination(remote); };'
   when:
-      - ubuntu1604cis_rule_4_2_2_5
+      - ubuntucis_rule_4_2_2_5
       - syslogng_package.rc == 0
   notify: restart syslog-ng
   tags:
@@ -818,7 +818,7 @@
   changed_when: false
   failed_when: false
   when:
-      - ubuntu1604cis_rule_4_2_4
+      - ubuntucis_rule_4_2_4
   tags:
       - level1
       - scored
@@ -843,12 +843,12 @@
         replace:
             path: "{{ item.path }}"
             regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
-            replace: "\\1{{ ubuntu1604cis_logrotate }}"
+            replace: "\\1{{ ubuntucis_logrotate }}"
         with_items:
             - "{{ log_rotates.files }}"
             - { path: "/etc/logrotate.conf" }
   when:
-      - ubuntu1604cis_rule_4_3
+      - ubuntucis_rule_4_3
   tags:
       - level1
       - notscored

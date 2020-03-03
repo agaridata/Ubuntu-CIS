@@ -3,7 +3,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_1
+      - ubuntucis_rule_2_1_1
   tags:
       - level1
       - scored
@@ -17,7 +17,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_2
+      - ubuntucis_rule_2_1_2
   tags:
       - level1
       - scored
@@ -29,7 +29,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_3
+      - ubuntucis_rule_2_1_3
   tags:
       - level1
       - scored
@@ -42,7 +42,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_4
+      - ubuntucis_rule_2_1_4
   tags:
       - level1
       - scored
@@ -55,7 +55,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_5
+      - ubuntucis_rule_2_1_5
   tags:
       - level1
       - scored
@@ -68,7 +68,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_6
+      - ubuntucis_rule_2_1_6
   tags:
       - level1
       - scored
@@ -80,7 +80,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_7
+      - ubuntucis_rule_2_1_7
   tags:
       - level1
       - patch
@@ -92,7 +92,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_8
+      - ubuntucis_rule_2_1_8
   tags:
       - level1
       - patch
@@ -104,7 +104,7 @@
   command: /bin/true
   changed_when: false
   when:
-      - ubuntu1604cis_rule_2_1_9
+      - ubuntucis_rule_2_1_9
   tags:
       - level1
       - patch
@@ -119,8 +119,8 @@
       enabled: false
   when:
       - xinetd_service_status.stdout == "loaded"
-      - not ubuntu1604cis_xinetd_required
-      - ubuntu1604cis_rule_2_1_10
+      - not ubuntucis_xinetd_required
+      - ubuntucis_rule_2_1_10
   tags:
       - level1
       - patch
@@ -135,8 +135,8 @@
       enabled: false
   when:
       - xinetd_service_status.stdout == "loaded"
-      - not ubuntu1604cis_xinetd_required
-      - ubuntu1604cis_rule_2_1_11
+      - not ubuntucis_xinetd_required
+      - ubuntucis_rule_2_1_11
   tags:
       - level1
       - patch
@@ -148,13 +148,13 @@
   block:
   - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service install"
     apt:
-      name: "{{ ubuntu1604cis_time_synchronization }}"
+      name: "{{ ubuntucis_time_synchronization }}"
       state: present
       install_recommends: false
 
   - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service start"
     systemd:
-      name: "{{ ubuntu1604cis_time_synchronization }}"
+      name: "{{ ubuntucis_time_synchronization }}"
       state: started
       enabled: true
 
@@ -164,7 +164,7 @@
       state: stopped
       enabled: false
     when:
-      - ubuntu1604cis_time_synchronization == "chrony"
+      - ubuntucis_time_synchronization == "chrony"
       - ntpd_service_status.stdout == "loaded"
 
   - name: "NOTSCORED | 2.2.1.1 | PATCH | Ensure time synchronization is in use - service stop chrony"
@@ -174,11 +174,11 @@
       enabled: false
     ignore_errors: true
     when:
-        - ubuntu1604cis_time_synchronization == "ntp"
+        - ubuntucis_time_synchronization == "ntp"
         - chronyd_service_status.stdout == "loaded"
 
   when:
-      - ubuntu1604cis_rule_2_2_1_1
+      - ubuntucis_rule_2_2_1_1
   tags:
       - level1
       - notscored
@@ -202,8 +202,8 @@
     regexp: "^RUNASUSER"
     line: "RUNASUSER=ntp"
   when:
-      - ubuntu1604cis_time_synchronization == "ntp"
-      - ubuntu1604cis_rule_2_2_1_2
+      - ubuntucis_time_synchronization == "ntp"
+      - ubuntucis_rule_2_2_1_2
   tags:
       - level1
       - scored
@@ -219,8 +219,8 @@
       group: root
       mode: 0644
   when:
-      - ubuntu1604cis_time_synchronization == "chrony"
-      - ubuntu1604cis_rule_2_2_1_3
+      - ubuntucis_time_synchronization == "chrony"
+      - ubuntucis_rule_2_2_1_3
   tags:
       - level1
       - scored
@@ -237,8 +237,8 @@
       state: present
       create: true
   when:
-      - ubuntu1604cis_time_synchronization == "chrony"
-      - ubuntu1604cis_rule_2_2_1_3
+      - ubuntucis_time_synchronization == "chrony"
+      - ubuntucis_rule_2_2_1_3
   tags:
       - level1
       - scored
@@ -255,8 +255,8 @@
           - "xserver-xorg*"
       state: absent
   when:
-      - not ubuntu1604cis_xwindows_required
-      - ubuntu1604cis_rule_2_2_2
+      - not ubuntucis_xwindows_required
+      - ubuntucis_rule_2_2_2
   tags:
       - level1
       - scored
@@ -270,9 +270,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_avahi_server
+      - not ubuntucis_avahi_server
       - avahi_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_3
+      - ubuntucis_rule_2_2_3
   tags:
       - level1
       - scored
@@ -287,9 +287,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_cups_server
+      - not ubuntucis_cups_server
       - cups_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_4
+      - ubuntucis_rule_2_2_4
   tags:
       - level1
       - scored
@@ -307,7 +307,7 @@
       enabled: false
     when:
        - isc_dhcp_server_service_status.stdout == "loaded"
-       
+
   - name: "SCORED | 2.2.5 | PATCH | Ensure DHCP Server is not enabled | Stop isc-dhcp-server6"
     systemd:
       name: isc-dhcp-server6
@@ -316,8 +316,8 @@
     when:
        - isc_dhcp_server6_service_status.stdout == "loaded"
   when:
-      - not ubuntu1604cis_dhcp_server
-      - ubuntu1604cis_rule_2_2_5
+      - not ubuntucis_dhcp_server
+      - ubuntucis_rule_2_2_5
   tags:
       - level1
       - scored
@@ -332,9 +332,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_ldap_server
+      - not ubuntucis_ldap_server
       - slapd_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_6
+      - ubuntucis_rule_2_2_6
   tags:
       - level1
       - scored
@@ -349,9 +349,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_nfs_rpc_server
+      - not ubuntucis_nfs_rpc_server
       - nfs_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_7
+      - ubuntucis_rule_2_2_7
   tags:
       - level1
       - scored
@@ -367,9 +367,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_nfs_rpc_server
+      - not ubuntucis_nfs_rpc_server
       - rpcbind_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_7
+      - ubuntucis_rule_2_2_7
   tags:
       - level1
       - scored
@@ -385,9 +385,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_bind9_server
+      - not ubuntucis_bind9_server
       - bind9_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_8
+      - ubuntucis_rule_2_2_8
   tags:
       - level1
       - scored
@@ -400,9 +400,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_vsftpd_server
+      - not ubuntucis_vsftpd_server
       - vsftpd_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_9
+      - ubuntucis_rule_2_2_9
   tags:
       - level1
       - scored
@@ -415,9 +415,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_apache2_server
+      - not ubuntucis_apache2_server
       - apache2_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_10
+      - ubuntucis_rule_2_2_10
   tags:
       - level1
       - scored
@@ -430,9 +430,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_dovecot_server
+      - not ubuntucis_dovecot_server
       - dovecot_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_11
+      - ubuntucis_rule_2_2_11
   tags:
       - level1
       - scored
@@ -445,9 +445,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_smb_server
+      - not ubuntucis_smb_server
       - smbd_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_12
+      - ubuntucis_rule_2_2_12
   tags:
       - level1
       - scored
@@ -460,9 +460,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_squid_server
+      - not ubuntucis_squid_server
       - squid_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_13
+      - ubuntucis_rule_2_2_13
   tags:
       - level1
       - scored
@@ -475,9 +475,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_snmp_server
+      - not ubuntucis_snmp_server
       - snmpd_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_14
+      - ubuntucis_rule_2_2_14
   tags:
       - level1
       - scored
@@ -490,9 +490,9 @@
       regexp: "^(#)?inet_interfaces"
       line: "inet_interfaces = localhost"
   when:
-      - not ubuntu1604cis_is_mail_server
+      - not ubuntucis_is_mail_server
       - postfix_installed.rc == 0
-      - ubuntu1604cis_rule_2_2_15
+      - ubuntucis_rule_2_2_15
   tags:
       - level1
       - scored
@@ -505,9 +505,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_rsync_server
+      - not ubuntucis_rsync_server
       - ypserv_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_16
+      - ubuntucis_rule_2_2_16
   tags:
       - level1
       - scored
@@ -520,9 +520,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_nis_server
+      - not ubuntucis_nis_server
       - rsh_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_17
+      - ubuntucis_rule_2_2_17
   tags:
       - level1
       - scored
@@ -535,9 +535,9 @@
       state: stopped
       enabled: false
   when:
-      - not ubuntu1604cis_nis_server
+      - not ubuntucis_nis_server
       - rlogin_service_status.stdout == "loaded"
-      - ubuntu1604cis_rule_2_2_17
+      - ubuntucis_rule_2_2_17
   tags:
       - level1
       - scored
@@ -549,8 +549,8 @@
       name: nis
       state: absent
   when:
-      - not ubuntu1604cis_nis_required
-      - ubuntu1604cis_rule_2_3_1
+      - not ubuntucis_nis_required
+      - ubuntucis_rule_2_3_1
   tags:
       - level1
       - scored
@@ -564,8 +564,8 @@
         - rsh-redone-client
       state: absent
   when:
-      - not ubuntu1604cis_rsh_required
-      - ubuntu1604cis_rule_2_3_2
+      - not ubuntucis_rsh_required
+      - ubuntucis_rule_2_3_2
   tags:
       - level1
       - scored
@@ -577,8 +577,8 @@
       name: talk
       state: absent
   when:
-      - not ubuntu1604cis_talk_required
-      - ubuntu1604cis_rule_2_3_3
+      - not ubuntucis_talk_required
+      - ubuntucis_rule_2_3_3
   tags:
       - level1
       - scored
@@ -590,8 +590,8 @@
       name: telnet
       state: absent
   when:
-      - not ubuntu1604cis_telnet_required
-      - ubuntu1604cis_rule_2_3_4
+      - not ubuntucis_telnet_required
+      - ubuntucis_rule_2_3_4
   tags:
       - level1
       - scored
@@ -603,8 +603,8 @@
       name: ldap-utils
       state: absent
   when:
-      - not ubuntu1604cis_ldap_utils_required
-      - ubuntu1604cis_rule_2_3_5
+      - not ubuntucis_ldap_utils_required
+      - ubuntucis_rule_2_3_5
   tags:
       - level1
       - scored
