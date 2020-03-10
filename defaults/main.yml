@@ -348,7 +348,7 @@ ubuntucis_firewall_services:
 
 # Warning Banner Content (issue, issue.net, motd)
 ubuntucis_warning_banner: |
-    Ubuntu 16.04.6 LTS
+    Ubuntu
     Authorized uses only. All activity may be monitored and reported.
 # End Banner
 
