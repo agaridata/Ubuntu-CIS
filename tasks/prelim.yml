@@ -294,12 +294,12 @@
   changed_when: false
   check_mode: false
 
-- name: "PRELIM | Check for rsyncd service"
+- name: "PRELIM | Check for rsync service"
   shell: "set -o pipefail
-      systemctl show rsyncd | grep LoadState | cut -d = -f 2"
+      systemctl show rsync | grep LoadState | cut -d = -f 2"
   args:
       executable: /bin/bash
-  register: rsyncd_service_status
+  register: rsync_service_status
   changed_when: false
   check_mode: false
 
