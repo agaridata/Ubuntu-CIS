@@ -506,7 +506,7 @@
       enabled: false
   when:
       - not ubuntucis_rsync_server
-      - ypserv_service_status.stdout == "loaded"
+      - rsync_service_status.stdout == "loaded"
       - ubuntucis_rule_2_2_16
   tags:
       - level1

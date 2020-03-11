@@ -127,7 +127,7 @@ ubuntucis_rule_3_1_2: true
 ubuntucis_rule_3_2_1: true
 ubuntucis_rule_3_2_2: true
 ubuntucis_rule_3_2_3: true
-ubuntucis_rule_3_2_4: true
+ubuntucis_rule_3_2_4: false
 ubuntucis_rule_3_2_5: true
 ubuntucis_rule_3_2_6: true
 ubuntucis_rule_3_2_7: true
@@ -348,7 +348,7 @@ ubuntucis_firewall_services:
 
 # Warning Banner Content (issue, issue.net, motd)
 ubuntucis_warning_banner: |
-    Ubuntu 16.04.6 LTS
+    Ubuntu
     Authorized uses only. All activity may be monitored and reported.
 # End Banner
 
