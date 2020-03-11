@@ -370,19 +370,17 @@
       - rule_4.1.17
 
 - name: "SCORED | 4.1.17 | PATCH | Ensure kernel module loading and unloading is collected"
-  lineinfile:
-      path: /etc/audit/audit.rules
-      line: '{{ item }}'
-      state: present
-      create: yes
-  with_items:
-      - '-w /sbin/insmod -p x -k modules'
-      - '-w /sbin/rmmod -p x -k modules'
-      - '-w /sbin/modprobe -p x -k modules'
-      - '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules'
+  template:
+      src: audit/ubuntucis_rule_4_1_17.rules.j2
+      dest: /etc/audit/rules.d/ubuntucis_rule_4_1_17.rules
+      owner: root
+      group: root
+      mode: 0600
   when:
       - ubuntucis_rule_4_1_17
-  notify: restart auditd
+  notify:
+      - load audit rules
+      - restart auditd
   tags:
       - level2
       - scored
