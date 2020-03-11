@@ -1,11 +1,11 @@
-Ubuntu 16.04 CIS STIG
+Ubuntu CIS STIG
 ================
 
-Configure Ubuntu 16.04 machine to be CIS compliant. Level 1 and 2 findings will be corrected by default.
+Configure Ubuntu  machine to be CIS compliant. Level 1 and 2 findings will be corrected by default.
 
 This role **will make changes to the system** that could break things. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-Based on [CIS Ubuntu Benchmark v1.1.0 - 12-28-2017 ](https://www.cisecurity.org/benchmark/ubuntu_linux/). To download this guide, you will need to click the `Download Latest CIS Benchmark Guide (For Ubuntu Linus 18.04)` and register. An email with a personal download link will be sent to your registered email address. From that link you can download the Ubuntu 16.04 guide.
+Based on [CIS Ubuntu Benchmark v1.1.0 - 12-28-2017 ](https://www.cisecurity.org/benchmark/ubuntu_linux/). To download this guide, you will need to click the `Download Latest CIS Benchmark Guide (For Ubuntu Linus 18.04)` and register. An email with a personal download link will be sent to your registered email address. From that link you can download the Ubuntu  guide.
 
 This repo originated from work done by [florianutz](https://github.com/florianutz/Ubuntu1604-CIS)
 
